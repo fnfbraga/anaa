@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { Login } from '$lib/models/logins';
+	import Button from './Button.svelte';
 	import Modal from './Modal.svelte';
 	import Name from './Name.svelte';
 	import Password from './Password.svelte';
@@ -33,29 +34,12 @@
 		<div class="flex flex-col space-y-4 p-4">
 			<span class="self-center space-x-4">
 				{#if !edit}
-					<button
-						on:click={() => (edit = true)}
-						class="hover:border-b-sky-500 hover:border-b-2 -pb-4 hover:-mb-0.5 "
-					>
-						EDIT
-					</button>
+					<Button on:click={() => (edit = true)} color="sky-500" text="EDIT" />
 				{:else}
-					<button
-						on:click={() => console.log(updatedValues)}
-						class="hover:border-b-green-500 hover:border-b-2 hover:-mb-0.5"
-					>
-						SAVE
-					</button>
-					<button
-						on:click={() => (edit = false)}
-						class="hover:border-b-stone-500 hover:border-b-2 hover:-mb-0.5"
-					>
-						CANCEL
-					</button>
+					<Button on:click={() => console.log(updatedValues)} color="green-500" text="SAVE" />
+					<Button on:click={() => (edit = false)} color="stone-500" text="CANCEL" />
 				{/if}
-				<button on:click class="hover:border-b-red-500 hover:border-b-2 hover:-mb-0.5">
-					DELETE
-				</button>
+				<Button on:click={() => console.log('delete')} color="red-500" text="DELETE" />
 			</span>
 			<Name
 				on:input={(e) => handleChange('name', e)}

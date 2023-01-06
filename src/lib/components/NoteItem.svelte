@@ -1,23 +1,27 @@
 <script lang="ts">
 	import type { Note } from '$lib/models/notes';
+	import Button from './Button.svelte';
 	import Modal from './Modal.svelte';
 	import Name from './Name.svelte';
 	import Tags from './Tags.svelte';
 
 	export let note: Note;
+	let updatedValues = note;
 	let showModal = false;
+	let edit = false;
 </script>
 
 {#if showModal}
 	<Modal on:close={() => (showModal = false)}>
 		<div class="flex flex-col space-y-4 p-4">
 			<span class="self-center space-x-4">
-				<button on:click class="hover:border-b-sky-500 hover:border-b-2 hover:-mb-0.5 ">
-					EDIT
-				</button>
-				<button on:click class="hover:border-b-red-500 hover:border-b-2 hover:-mb-0.5">
-					DELETE
-				</button>
+				{#if !edit}
+					<Button on:click={() => (edit = true)} color="sky-500" text="EDIT" />
+				{:else}
+					<Button on:click={() => console.log(updatedValues)} color="green-500" text="SAVE" />
+					<Button on:click={() => (edit = false)} color="stone-500" text="CANCEL" />
+				{/if}
+				<Button on:click={() => console.log('delete')} color="red-500" text="DELETE" />
 			</span>
 			<Name name={note.name} handleShowModal={() => (showModal = true)} />
 			<span class="w-full h-80 overflow-y-auto font-mono text-sm bg-slate-200 p-2 rounded-md">

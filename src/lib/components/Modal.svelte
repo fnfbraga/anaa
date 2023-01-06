@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { createEventDispatcher, onDestroy } from 'svelte';
+	import Button from './Button.svelte';
 
 	export let closeRoute: string | undefined = undefined;
 	const dispatch = createEventDispatcher();
@@ -57,8 +58,6 @@
 >
 	<slot />
 	<span class="w-100 flex justify-center items-end mb-2">
-		<button class="hover:border-b-orange-500 hover:border-b-2 hover:-mb-0.5" on:click={close}
-			>CLOSE</button
-		>
+		<Button on:click={close} color="orange-500" text="CLOSE" />
 	</span>
 </div>
