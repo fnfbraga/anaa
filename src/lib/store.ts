@@ -8,21 +8,21 @@ const testLogins: Array<Login> = [
 		url: 'http://www.google.com',
 		password: '233',
 		tags: ['banks', 'personal'],
-		username: 'maria'
+		username: 'frederico.braga@gmail.com'
 	},
 	{
 		name: 'My site 2',
 		url: 'http://www.google.com',
 		password: '2akjh33',
 		tags: ['banks', 'work'],
-		username: 'manel'
+		username: 'maria.helena.j.ferreira@gmail.com'
 	}
 ];
 
 const testNotes: Array<Note> = [
 	{
 		name: 'note 1',
-		note: 'test note 1',
+		note: 'test note 1 ',
 		tags: ['banks', 'work']
 	},
 	{

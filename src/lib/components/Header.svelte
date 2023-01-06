@@ -1,20 +1,14 @@
-<nav class="shadow bg-white border-gray-400 px-2 sm:px-4 py-2.5 rounded flex	justify-between">
-	<span class="flex align-middle justify-between w-1/6">
-		<button
-			on:click={(e) => console.log(e)}
-			class="hover:border-b-stone-500 hover:border-b-2 hover:-mb-0.5"
-		>
-			logins
-		</button>
-		<button
-			on:click={(e) => console.log(e)}
-			class="hover:border-b-stone-500 hover:border-b-2 hover:-mb-0.5"
-		>
-			notes
-		</button>
+<script>
+	import HeaderButton from './HeaderButton.svelte';
+</script>
+
+<nav class="shadow bg-white border-gray-400 px-2 sm:px-4 py-2.5 rounded flex justify-between">
+	<span class="flex align-middle justify-between space-x-3">
+		<HeaderButton on:click={(e) => console.log(e)}>logins</HeaderButton>
+		<HeaderButton on:click={(e) => console.log(e)}>notes</HeaderButton>
 	</span>
-	<div class="relative text-gray-600 focus-within:text-gray-400">
-		<span class="absolute inset-y-0 left-0 flex items-center pl-2">
+	<div class="relative text-gray-600 focus-within:text-gray-400 ml-2 w-6/12">
+		<span class="absolute inset-y-0 left-0 flex items-center pl-1">
 			<button type="submit" class="p-1 focus:outline-none focus:shadow-outline">
 				<svg
 					fill="none"
@@ -30,7 +24,7 @@
 		<input
 			type="search"
 			name="search"
-			class="py-2 text-white bg-gray-100 rounded-md pl-10 focus:outline-none focus:bg-white focus:text-gray-900"
+			class="w-11/12 py-2 text-white bg-gray-100 rounded-md pl-10 focus:outline-none focus:text-gray-900"
 			placeholder="Search..."
 			autocomplete="off"
 		/>
