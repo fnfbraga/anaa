@@ -3,6 +3,7 @@
 	import { createPopperActions } from 'svelte-popperjs';
 	import CopyIcon from './CopyIcon.svelte';
 	import ShowIcon from './ShowIcon.svelte';
+	import Input from './Input.svelte';
 
 	const [passwordRef, popperPasswordContent] = createPopperActions(popperOptions);
 	export let password: string | undefined;
@@ -29,11 +30,7 @@
 				</div>
 			{/if}
 			{#if edit}
-				<input
-					value={password}
-					on:input
-					class="p-1 rounded-md border-2 mt-2 focus:outline-1 focus:text-gray-900"
-				/>
+				<Input on:input inputValue={password} />
 			{:else if masked}
 				{mask}
 			{:else}

@@ -58,6 +58,6 @@
 >
 	<slot />
 	<span class="w-100 flex justify-center items-end mb-2">
-		<Button on:click={close} color="orange-500" text="CLOSE" />
+		<Button on:click={close} color="hover:border-b-orange-500" text="CLOSE" />
 	</span>
 </div>

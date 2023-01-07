@@ -12,7 +12,7 @@
 		<Fab />
 	</main>
 
-	<footer class="h-6 flex justify-center ">
+	<footer class="h-6 flex justify-center bg-white">
 		<img src={githubLogo} alt="GitHub Logo" class="h-3" />
 		<p class="text-xs">
 			Made by

@@ -6,7 +6,6 @@
 	import Tags from './Tags.svelte';
 
 	export let note: Note;
-	let updatedValues = note;
 	let showModal = false;
 	let edit = false;
 </script>
@@ -16,12 +15,16 @@
 		<div class="flex flex-col space-y-4 p-4">
 			<span class="self-center space-x-4">
 				{#if !edit}
-					<Button on:click={() => (edit = true)} color="sky-500" text="EDIT" />
+					<Button on:click={() => (edit = true)} color="hover:border-b-sky-500" text="EDIT" />
 				{:else}
-					<Button on:click={() => console.log(updatedValues)} color="green-500" text="SAVE" />
-					<Button on:click={() => (edit = false)} color="stone-500" text="CANCEL" />
+					<Button on:click={() => console.log(note)} color="hover:border-b-green-500" text="SAVE" />
+					<Button on:click={() => (edit = false)} color="hover:border-b-stone-500" text="CANCEL" />
 				{/if}
-				<Button on:click={() => console.log('delete')} color="red-500" text="DELETE" />
+				<Button
+					on:click={() => console.log('delete')}
+					color="hover:border-b-red-500"
+					text="DELETE"
+				/>
 			</span>
 			<Name name={note.name} handleShowModal={() => (showModal = true)} />
 			<span class="w-full h-80 overflow-y-auto font-mono text-sm bg-slate-200 p-2 rounded-md">

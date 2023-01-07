@@ -2,6 +2,7 @@
 	import { popperOptions } from '$lib/misc';
 	import { createPopperActions } from 'svelte-popperjs';
 	import CopyIcon from './CopyIcon.svelte';
+	import Input from './Input.svelte';
 
 	const [urlRef, popperUrlContent] = createPopperActions(popperOptions);
 	export let url: string | undefined;
@@ -24,11 +25,7 @@
 	<span class="flex items-center h-6 ">
 		<p class="truncate" use:urlRef>
 			{#if edit}
-				<input
-					value={url}
-					on:input
-					class="p-1 rounded-md border-2 mt-2 focus:outline-1 focus:text-gray-900"
-				/>
+				<Input on:input inputValue={url} />
 			{:else}
 				{url}
 			{/if}

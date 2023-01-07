@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { popperOptions } from '$lib/misc';
 	import { createPopperActions } from 'svelte-popperjs';
+	import Input from './Input.svelte';
 
 	const [nameRef, popperNameContent] = createPopperActions(popperOptions);
 	export let name: string | undefined;
@@ -25,11 +26,7 @@
 	<span class="flex items-center h-6 ">
 		<p class="truncate" use:nameRef>
 			{#if edit}
-				<input
-					value={name}
-					on:input
-					class="p-1 rounded-md border-2 mt-2 focus:outline-1 focus:text-gray-900"
-				/>
+				<Input on:input inputValue={name} />
 			{:else}
 				{name}
 			{/if}
