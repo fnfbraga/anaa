@@ -5,6 +5,7 @@
 </script>
 
 <button
+	{...$$props}
 	{disabled}
 	on:click
 	class={!disabled ? `hover:border-b-2 ${color} -pb-4 hover:-mb-0.5 pb-2` : ''}

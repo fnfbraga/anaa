@@ -21,7 +21,6 @@
 			{username}
 		</div>
 	{/if}
-	<p class="font-normal from-neutral text-sm">USERNAME</p>
 	<span class="flex items-center h-6 ">
 		<p class="truncate" use:usernameRef>
 			{#if edit}

@@ -8,17 +8,18 @@
 	const [passwordRef, popperPasswordContent] = createPopperActions(popperOptions);
 	export let password: string | undefined;
 	export let edit = false;
+	$: isEdit = edit;
+	export let classes: string = '';
 
 	let showTooltip = false;
 	const mask = '********';
-	let masked = true;
+	let masked = isEdit ? false : true;
 </script>
 
 <span>
-	<p class="font-normal from-neutral text-sm">PASSWORD</p>
-	<span class="flex items-center h-6 ">
+	<span class="flex items-center">
 		<p
-			class="truncate font-mono"
+			class="truncate font-mono ${classes} w-full"
 			on:mouseover={() => (showTooltip = true)}
 			on:focus={() => (showTooltip = true)}
 			on:mouseleave={() => (showTooltip = false)}
@@ -30,20 +31,32 @@
 				</div>
 			{/if}
 			{#if edit}
-				<Input on:input inputValue={password} />
+				<Input
+					placeholder="Password"
+					inputType={masked ? 'password' : 'input'}
+					id="password-input"
+					on:input
+					bind:inputValue={password}
+				/>
 			{:else if masked}
-				{mask}
+				<span id="password-masked-view">{mask}</span>
 			{:else}
-				{password}
+				<span id="password-view">{password}</span>
 			{/if}
 		</p>
-		<ShowIcon {masked} on:click={() => (masked = !masked)} on:keypress={() => (masked = !masked)} />
-		<CopyIcon
-			on:keypress={() => alert('copy')}
-			on:click={() => {
-				navigator.clipboard.writeText(password || '');
-				alert(`copied ${password}`);
-			}}
-		/>
+		{#if password?.length}
+			<ShowIcon
+				{masked}
+				on:click={() => (masked = !masked)}
+				on:keypress={() => (masked = !masked)}
+			/>
+			<CopyIcon
+				on:keypress={() => alert('copy')}
+				on:click={() => {
+					navigator.clipboard.writeText(password || '');
+					alert(`copied ${password}`);
+				}}
+			/>
+		{/if}
 	</span>
 </span>

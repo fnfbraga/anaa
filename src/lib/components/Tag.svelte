@@ -5,7 +5,8 @@
 
 {#if tag}
 	<span
-		class="flex items-center w-fit whitespace-nowrap inline bg-sky-300 rounded-full mr-1 p-1 px-2 text-sm"
+		{...$$props}
+		class="flex items-center w-fit whitespace-nowrap bg-sky-300 rounded-full mr-1 p-1 px-2 text-sm"
 	>
 		{tag}
 		{#if edit}

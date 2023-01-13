@@ -22,7 +22,6 @@
 			{name}
 		</div>
 	{/if}
-	<p class="text-sm">NAME</p>
 	<span class="flex items-center h-6 ">
 		<p class="truncate" use:nameRef>
 			{#if edit}

@@ -21,7 +21,6 @@
 			{url}
 		</div>
 	{/if}
-	<p class="font-normal from-neutral text-sm">URL</p>
 	<span class="flex items-center h-6 ">
 		<p class="truncate" use:urlRef>
 			{#if edit}

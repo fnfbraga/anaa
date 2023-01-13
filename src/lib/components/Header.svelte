@@ -1,11 +1,20 @@
-<script>
+<script lang="ts">
 	import HeaderButton from './HeaderButton.svelte';
+	let selected: 'logins' | 'notes' | undefined = undefined;
+
+	const handleSelect = (value: 'logins' | 'notes') => {
+		selected === value ? (selected = undefined) : (selected = value);
+	};
 </script>
 
 <nav class="shadow bg-white border-gray-400 px-2 sm:px-4 py-2.5 rounded flex justify-between">
 	<span class="flex align-middle justify-between space-x-3">
-		<HeaderButton on:click={(e) => console.log(e)}>logins</HeaderButton>
-		<HeaderButton on:click={(e) => console.log(e)}>notes</HeaderButton>
+		<HeaderButton selected={selected === 'logins'} on:click={() => handleSelect('logins')}
+			>logins</HeaderButton
+		>
+		<HeaderButton selected={selected === 'notes'} on:click={() => handleSelect('notes')}
+			>notes</HeaderButton
+		>
 	</span>
 	<div class="relative text-gray-600 focus-within:text-gray-400 ml-2 w-6/12">
 		<span class="absolute inset-y-0 left-0 flex items-center pl-1">
