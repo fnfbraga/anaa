@@ -27,7 +27,7 @@
 			{#if edit}
 				<Input on:input inputValue={name} />
 			{:else}
-				{name}
+				<p class="text-xs">{name}</p>
 			{/if}
 		</p>
 	</span>

@@ -26,7 +26,7 @@
 			{#if edit}
 				<Input on:input inputValue={url} />
 			{:else}
-				{url}
+				<p class="text-xs">{url}</p>
 			{/if}
 		</p>
 		<CopyIcon

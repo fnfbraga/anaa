@@ -30,7 +30,7 @@
 					class="p-1 rounded-md border-2 mt-2 focus:outline-1 focus:text-gray-900"
 				/>
 			{:else}
-				{username}
+				<p class="text-xs">{username}</p>
 			{/if}
 		</p>
 		<CopyIcon

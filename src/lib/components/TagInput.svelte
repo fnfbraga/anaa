@@ -41,6 +41,6 @@
 		id="tag-input"
 		placeholder="Write tag and press Enter to add tag"
 		bind:value={tagInput}
-		class="w-full focus:outline-0"
+		class="text-sm w-full focus:outline-0"
 	/>
 </div>

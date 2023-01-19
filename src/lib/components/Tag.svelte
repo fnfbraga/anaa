@@ -6,9 +6,10 @@
 {#if tag}
 	<span
 		{...$$props}
-		class="flex items-center w-fit whitespace-nowrap bg-sky-300 rounded-full mr-1 p-1 px-2 text-sm"
+		class="flex items-center whitespace-nowrap bg-sky-400 rounded-full mr-1 p-1 px-2 {!edit &&
+			'mb-1'} "
 	>
-		{tag}
+		<p class="text-xs pt-0.5">{tag}</p>
 		{#if edit}
 			<button on:click>
 				<svg
@@ -17,7 +18,7 @@
 					viewBox="0 0 24 24"
 					stroke-width="1.5"
 					stroke="currentColor"
-					class="w-4 h-4 ml-0.5  hover:bg-sky-200 rounded-full"
+					class="w-4 h-4 ml-0.5  hover:bg-sky-300 rounded-full"
 				>
 					<path
 						stroke-linecap="round"

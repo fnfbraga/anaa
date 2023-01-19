@@ -1,5 +1,6 @@
 <script lang="ts">
 	import HeaderButton from './HeaderButton.svelte';
+	import NavUserActions from './NavUserActions.svelte';
 	let selected: 'logins' | 'notes' | undefined = undefined;
 
 	const handleSelect = (value: 'logins' | 'notes') => {
@@ -7,7 +8,9 @@
 	};
 </script>
 
-<nav class="shadow bg-white border-gray-400 px-2 sm:px-4 py-2.5 rounded flex justify-between">
+<nav
+	class="shadow bg-white border-gray-400 px-2 sm:px-4 py-2.5 rounded flex justify-between w-full"
+>
 	<span class="flex align-middle justify-between space-x-3">
 		<HeaderButton selected={selected === 'logins'} on:click={() => handleSelect('logins')}
 			>logins</HeaderButton
@@ -38,7 +41,7 @@
 			autocomplete="off"
 		/>
 	</div>
-	<button class="w-10 h-10 rounded-full bg-slate-400 hover:shadow-lg">AM</button>
+	<NavUserActions />
 </nav>
 
 <style>

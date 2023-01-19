@@ -63,20 +63,20 @@
 	</Modal>
 {/if}
 
-<div class="flex w-11/12 m-2 space-x-4 rounded shadow p-4 pl-8 hover:shadow-md">
-	<span class="w-1/6 lg:w-1/6 p-2 text-xs cursor-pointer">
+<div class="flex m-2 space-x-4 w-full rounded shadow p-4 pl-8 hover:shadow-md">
+	<span class="w-1/6 lg:w-2/12 p-2 cursor-pointer">
 		<Name name={login.name} handleShowModal={() => (showModal = true)} />
 	</span>
-	<span class="w-1/6 lg:w-1/5 p-2 text-xs font-mono hidden lg:block">
+	<span class="w-1/6 lg:w-2/12 p-2 font-mono hidden lg:block">
 		<Url url={login.url} />
 	</span>
-	<span class="w-2/6 lg:w-1/5 p-2 text-xs">
+	<span class="w-1/6 lg:w-2/12 p-2">
 		<Username username={login.username} />
 	</span>
-	<span class="w-2/6 lg:w-1/5 p-2 text-xs">
+	<span class="w-2/6 lg:w-3/12 p-2">
 		<Password password={login.password} />
 	</span>
-	<span class="w-1/6 lg:w-1/5 p-2 text-xs hidden sm:block">
+	<span class="w-[140px] justify-self-end lg:w-[140px] p-2 hidden sm:block">
 		<Tags tags={login.tags} />
 	</span>
 </div>

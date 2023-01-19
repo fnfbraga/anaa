@@ -1,5 +1,6 @@
 import type { Login } from '$lib/models/logins';
 import { writable, type Writable } from 'svelte/store';
+import type { AlertEnum } from './models/misc';
 import type { Note } from './models/notes';
 
 const testLogins: Array<Login> = [
@@ -23,14 +24,17 @@ const testNotes: Array<Note> = [
 	{
 		name: 'note 1',
 		note: 'test note 1 ',
-		tags: ['banks', 'work']
+		tags: ['banks', 'work', 'a nother tagsss']
 	},
 	{
 		name: 'note 2',
 		note: 'test note 2',
-		tags: ['banks', 'personal']
+		tags: ['banks', 'personal', 'another']
 	}
 ];
 
 export const logins: Writable<Array<Login | null>> = writable(testLogins);
 export const notes: Writable<Array<Note | null>> = writable(testNotes);
+export const alerts = writable<
+	Array<{ type: AlertEnum; message: string; createdOn: number } | null>
+>([]);

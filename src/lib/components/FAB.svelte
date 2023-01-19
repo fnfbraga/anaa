@@ -39,7 +39,7 @@
 		<path
 			stroke-linecap="round"
 			stroke-linejoin="round"
-			stroke="#16a34a"
+			stroke="rgb(100 116 139)"
 			d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
 		/>
 	{:else}

@@ -35,14 +35,14 @@
 	</Modal>
 {/if}
 
-<div class="flex w-11/12 m-2 space-x-4 rounded shadow p-4 pl-8 hover:shadow-md">
-	<span class="cursor-pointer ml-2 text-xs w-1/5 lg:w-1/6 ">
+<div class="flex w-full m-2 space-x-4 rounded shadow p-4 pl-8 hover:shadow-md">
+	<span class="w-1/6 lg:w-1/6 cursor-pointer ml-2 text-xs">
 		<Name name={note.name} handleShowModal={() => (showModal = true)} />
 	</span>
-	<span class="w-8/12 truncate font-mono text-sm bg-slate-200 p-1 rounded-md">
+	<span class="w-4/6 truncate font-mono text-sm bg-slate-200 p-1 rounded-md">
 		{note.note}
 	</span>
-	<span class="w-1/5 hidden sm:block">
+	<span class="w-[140px] lg:w-[140px] hidden sm:block">
 		<Tags tags={note.tags} />
 	</span>
 </div>
