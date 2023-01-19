@@ -13,9 +13,7 @@
 		handleCopytoClipBoard({ message: `${text} copied to clipboard`, elementId: emailId });
 	}
 	export let data: PageData;
-	console.log('🚀 ~ file: +page.svelte:16 ~ data', data);
 	export let form: ActionData;
-	console.log('🚀 ~ file: +page.svelte:18 ~ form', form);
 </script>
 
 <Modal closeRoute="/">
