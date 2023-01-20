@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import Button from '$lib/components/Button.svelte';
 	import Modal from '$lib/components/Modal.svelte';
@@ -14,15 +13,18 @@
 	}
 	export let data: PageData;
 	export let form: ActionData;
+	$: loading = false;
 </script>
 
 <Modal closeRoute="/">
 	{#if data?.responseData && data.responseData.length > 0}
-		<form class="p-4" method="post">
-			<Button formaction="?/deleteFile">Delete File</Button>
+		<form class="p-4" method="post" on:submit={() => (loading = true)}>
+			<Button disabled={loading} formaction="?/deleteFile"
+				>{loading ? 'Deleting File...' : 'Delete File'}</Button
+			>
 		</form>
 	{:else}
-		<form class="p-4" method="post">
+		<form class="p-4" method="post" on:submit={() => (loading = true)}>
 			<ul>
 				<li class="p-2">
 					<strong>STEP 1:</strong> create a folder in your google drive and share it with the
@@ -33,7 +35,9 @@
 				</li>
 				<li class="p-2">
 					<strong>STEP 2:</strong> click here to create file:
-					<Button formaction="?/createFile">Create File</Button>
+					<Button disabled={loading} formaction="?/createFile"
+						>{loading ? 'Creating File...' : 'Create File'}</Button
+					>
 				</li>
 			</ul>
 		</form>

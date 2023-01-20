@@ -4,11 +4,9 @@ import { serviceAccountCredentials } from '$lib/config';
 import { createSourceFile, deleteSourceFile } from '$lib/functions/google-drive';
 
 export const load: PageServerLoad = async () => {
-	const responseData = await googleDriveService.files.list({});
-
 	return {
 		clientEmail: serviceAccountCredentials.client_email,
-		responseData: responseData.data.files?.filter(
+		responseData: (await googleDriveService.files.list({})).data.files?.filter(
 			(file) => file.mimeType !== 'application/vnd.google-apps.folder' && file.name !== '_anaa'
 		)
 	};
@@ -25,11 +23,9 @@ export const actions: Actions = {
 		}
 		if (files?.length === 1 && files[0].mimeType === 'application/vnd.google-apps.folder') {
 			const parentFolderId = files[0].id || '';
-			const id = await createSourceFile(parentFolderId);
-			console.log('🚀 ~ file: +page.server.ts:29 ~ createFile: ~ id', id);
+			await createSourceFile(parentFolderId);
 			success = true;
 		}
-
 		return { createdFile: success };
 	},
 	deleteFile: async () => {
@@ -47,9 +43,9 @@ export const actions: Actions = {
 				success = false;
 			}
 			await deleteSourceFile(file?.id as string);
+			success = true;
 		}
 
-		success = true;
 		return { deletedFile: success };
 	}
 };
