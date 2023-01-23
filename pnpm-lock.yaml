@@ -19,6 +19,7 @@ specifiers:
   eslint: ^8.28.0
   eslint-config-prettier: ^8.5.0
   eslint-plugin-svelte3: ^4.0.0
+  google-auth-library: ^8.7.0
   googleapis: '105'
   postcss: ^8.4.20
   prettier: ^2.8.0
@@ -39,6 +40,7 @@ dependencies:
   '@google-cloud/local-auth': 2.1.0
   '@popperjs/core': 2.11.6
   crypto: 1.0.1
+  google-auth-library: 8.7.0
   googleapis: 105.0.0
   svelte-popperjs: 1.3.2_wbktlcl6xhsncvz2r5eelcs6le
   zod: 3.20.2

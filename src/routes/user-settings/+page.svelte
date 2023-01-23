@@ -14,14 +14,30 @@
 	export let data: PageData;
 	export let form: ActionData;
 	$: loading = false;
+	$: folder = data.responseData;
+	let deleteFile = false;
 </script>
 
 <Modal closeRoute="/">
-	{#if data?.responseData && data.responseData.length > 0}
+	{#if data?.responseData}
+		<p>
+			You have shared the folder <strong
+				><a href={`https://drive.google.com/file/d/${folder?.id}`} target="_blank" rel="noreferrer"
+					>{folder?.name}</a
+				></strong
+			> with this app
+		</p>
 		<form class="p-4" method="post" on:submit={() => (loading = true)}>
-			<Button disabled={loading} formaction="?/deleteFile"
-				>{loading ? 'Deleting File...' : 'Delete File'}</Button
-			>
+			{#if deleteFile}
+				<Button color="hover:border-b-orange-500" disabled={loading} formaction="?/deleteFile"
+					>{loading ? 'Deleting File...' : 'Confirm Delete File'}</Button
+				>
+				{#if !loading}
+					<Button on:click={() => (deleteFile = false)}>Cancel File</Button>
+				{/if}
+			{:else}
+				<Button on:click={() => (deleteFile = true)}>Delete File</Button>
+			{/if}
 		</form>
 	{:else}
 		<form class="p-4" method="post" on:submit={() => (loading = true)}>

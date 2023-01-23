@@ -1,51 +1,34 @@
 import type { Actions, PageServerLoad } from './$types';
 import googleDriveService from '$lib/services/google-drive';
 import { serviceAccountCredentials } from '$lib/config';
-import { createSourceFile, deleteSourceFile } from '$lib/functions/google-drive';
+import { createSourceFile, getUserFile, getUserParentFolder } from '$lib/functions/google-drive';
 
-export const load: PageServerLoad = async () => {
+export const load: PageServerLoad = async ({ locals }) => {
+	const userEmail = (await locals.getSession())?.user?.email;
+	const userFile = await getUserFile(userEmail || '');
 	return {
 		clientEmail: serviceAccountCredentials.client_email,
-		responseData: (await googleDriveService.files.list({})).data.files?.filter(
-			(file) => file.mimeType !== 'application/vnd.google-apps.folder' && file.name !== '_anaa'
-		)
+		responseData: userFile
 	};
 };
 
 export const actions: Actions = {
-	createFile: async () => {
-		let success;
-		const driveFiles = await googleDriveService.files.list({});
-		const files = driveFiles?.data.files;
-		if (!files?.length) {
-			success = false;
-			console.error('no files found');
-		}
-		if (files?.length === 1 && files[0].mimeType === 'application/vnd.google-apps.folder') {
-			const parentFolderId = files[0].id || '';
-			await createSourceFile(parentFolderId);
+	createFile: async ({ locals }) => {
+		const user = (await locals.getSession())?.user;
+		const userEmail = user?.email;
+		let success = false;
+		const userParentFolder = await getUserParentFolder(userEmail || '');
+		if (userParentFolder) {
+			await createSourceFile(userParentFolder?.id || '', user);
 			success = true;
 		}
 		return { createdFile: success };
 	},
-	deleteFile: async () => {
+	deleteFile: async ({ locals }) => {
+		const userEmail = (await locals.getSession())?.user?.email;
 		let success;
-		const driveFiles = await googleDriveService.files.list({});
-		const files = driveFiles?.data.files;
-		if (!files?.length) {
-			success = false;
-			console.error('no files found');
-		}
-		if (files?.length === 2 && files[0].mimeType !== 'application/vnd.google-apps.folder') {
-			const file = files.find((file) => file.name === 'anaa');
-			if (!file?.id) {
-				console.error('cannot find file');
-				success = false;
-			}
-			await deleteSourceFile(file?.id as string);
-			success = true;
-		}
-
+		const userFile = await getUserFile(userEmail || '');
+		await googleDriveService.files.delete({ fileId: userFile?.id || '' });
 		return { deletedFile: success };
 	}
 };
