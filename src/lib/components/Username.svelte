@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { handleCopytoClipBoard } from '$lib/functions/copy-to-cllipboard';
 	import { popperOptions } from '$lib/misc';
 	import { createPopperActions } from 'svelte-popperjs';
 	import CopyIcon from './CopyIcon.svelte';
@@ -16,29 +17,30 @@
 	on:focus={() => (showTooltip = true)}
 	on:mouseleave={() => (showTooltip = false)}
 >
-	{#if showTooltip}
+	{#if showTooltip && username}
 		<div class="bg-black p-2 rounded-md text-white" id="tooltip" use:popperUsernameContent>
 			{username}
 		</div>
 	{/if}
-	<span class="flex items-center h-6 ">
-		<p class="truncate" use:usernameRef>
+	<span class="flex items-center h-6">
+		<p class="truncate w-3/4" use:usernameRef>
 			{#if edit}
-				<Input
-					on:input
-					inputValue={username}
-					class="p-1 rounded-md border-2 mt-2 focus:outline-1 focus:text-gray-900"
-				/>
+				<div class="mt-16">
+					<Input label="username" on:input inputValue={username} />
+				</div>
 			{:else}
 				<p class="text-xs">{username}</p>
 			{/if}
 		</p>
-		<CopyIcon
-			on:keypress={() => alert('copy')}
-			on:click={() => {
-				navigator.clipboard.writeText(username || '');
-				alert(`copied ${username}`);
-			}}
-		/>
+		<span class={edit ? 'mt-16' : ''}>
+			<CopyIcon
+				disabled={!username}
+				on:keypress={() =>
+					handleCopytoClipBoard({ message: `username copied to clipboard`, content: username })}
+				on:click={() => {
+					handleCopytoClipBoard({ message: `username copied to clipboard`, content: username });
+				}}
+			/>
+		</span>
 	</span>
 </span>

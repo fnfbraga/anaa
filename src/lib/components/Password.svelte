@@ -4,47 +4,47 @@
 	import CopyIcon from './CopyIcon.svelte';
 	import ShowIcon from './ShowIcon.svelte';
 	import Input from './Input.svelte';
+	import { handleCopytoClipBoard } from '$lib/functions/copy-to-cllipboard';
 
 	const [passwordRef, popperPasswordContent] = createPopperActions(popperOptions);
+	export let isModal = true;
 	export let password: string | undefined;
 	export let edit = false;
+	export let disabled: boolean;
 	$: isEdit = edit;
 	export let classes: string = '';
 
 	let showTooltip = false;
-	const mask = '********';
-	let masked = isEdit ? false : true;
+	$: masked = true;
 </script>
 
-<span>
-	<span class="flex items-center">
-		<p
-			class="truncate font-mono ${classes} w-full"
-			on:mouseover={() => (showTooltip = true)}
-			on:focus={() => (showTooltip = true)}
-			on:mouseleave={() => (showTooltip = false)}
-			use:passwordRef
-		>
-			{#if showTooltip && !masked}
-				<div class="bg-black p-2 rounded-md text-white" id="tooltip" use:popperPasswordContent>
-					{password}
-				</div>
-			{/if}
-			{#if edit}
-				<Input
-					placeholder="Password"
-					inputType={masked ? 'password' : 'input'}
-					id="password-input"
-					on:input
-					bind:inputValue={password}
-				/>
-			{:else if masked}
-				<span id="password-masked-view">{mask}</span>
-			{:else}
-				<span id="password-view">{password}</span>
-			{/if}
-		</p>
-		{#if password?.length}
+<span class="flex items-center">
+	<span
+		class="truncate font-mono ${classes} w-3/4"
+		on:mouseover={() => (showTooltip = true)}
+		on:focus={() => (showTooltip = true)}
+		on:mouseleave={() => (showTooltip = false)}
+		use:passwordRef
+	>
+		{#if showTooltip && !masked}
+			<div class="bg-black p-2 rounded-md text-white" id="tooltip" use:popperPasswordContent>
+				{password}
+			</div>
+		{:else}{/if}
+		<div class="truncate">
+			<Input
+				label={isModal ? 'password' : ''}
+				inputType={masked ? 'password' : 'input'}
+				id="password-input"
+				on:input
+				bind:inputValue={password}
+				disabled={disabled || !isModal}
+				{isModal}
+			/>
+		</div>
+	</span>
+	{#if password?.length}
+		<span class={isEdit ? 'flex' : 'flex'}>
 			<ShowIcon
 				{masked}
 				on:click={() => (masked = !masked)}
@@ -53,10 +53,9 @@
 			<CopyIcon
 				on:keypress={() => alert('copy')}
 				on:click={() => {
-					navigator.clipboard.writeText(password || '');
-					alert(`copied ${password}`);
+					handleCopytoClipBoard({ message: `password copied to clipboard`, content: password });
 				}}
 			/>
-		{/if}
-	</span>
+		</span>
+	{/if}
 </span>

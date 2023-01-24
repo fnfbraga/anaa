@@ -32,7 +32,7 @@
 
 {#each $alerts as alert, index}
 	{#if alert && alert.createdOn + 3000 > time.getTime()}
-		<div class="{getColor(alert.type)} px-4 py-3 rounded relative" role="alert">
+		<div class="{getColor(alert.type)} px-4 py-3 rounded relative mb-1" role="alert">
 			<strong class="font-bold mr-9">{alert?.message}</strong>
 			<span class="absolute top-0 bottom-0 right-0 px-4 py-3">
 				<svg

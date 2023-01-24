@@ -9,7 +9,6 @@
 		loading = true;
 		await signIn('google', { redirect: false })
 			.then((v) => {
-				console.log(v);
 				loading = false;
 			})
 			.catch((e) => console.error(e));

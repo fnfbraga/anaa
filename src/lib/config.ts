@@ -1,4 +1,5 @@
 import {
+	ALLOWED_USERS,
 	GOOGE_CLIENT_ID,
 	GOOGLE_CLIENT_SECRET,
 	SERVICE_ACCOUNT_CLIENT_CERT_URL,
@@ -23,3 +24,4 @@ export const serviceAccountCredentials = {
 	auth_provider_x509_cert_url: 'https://www.googleapis.com/oauth2/v1/certs',
 	client_x509_cert_url: SERVICE_ACCOUNT_CLIENT_CERT_URL
 };
+export const allowedUsers: Array<string | undefined> = JSON.parse(ALLOWED_USERS) || [];

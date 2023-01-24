@@ -1,36 +1,45 @@
 <script lang="ts">
 	import LoginItem from '$lib/components/LoginItem.svelte';
 	import NoteItem from '$lib/components/NoteItem.svelte';
+	import Fab from '$lib/components/FAB.svelte';
+	import {
+		filterState,
+		loadingState,
+		notFoundState,
+		searchState,
+		sourceFile,
+		sourceFileExists
+	} from '$lib/store';
+	import Loading from '$lib/components/Loading.svelte';
+	import { ItemType } from '$lib/models/misc';
 	import type { Login } from '$lib/models/logins';
 	import type { Note } from '$lib/models/notes';
-	import Fab from '$lib/components/FAB.svelte';
-	import { sourceFile } from '$lib/store';
 	import { onMount } from 'svelte';
-	import Loading from '$lib/components/Loading.svelte';
 
-	$: notes = $sourceFile?.filter((item) => (item as Note)?.note);
-	$: logins = $sourceFile?.filter((item) => (item as Login)?.url);
-	let notFound = false;
-	$: loading = false;
+	$: notes = $sourceFile?.filter((item) => item?.type === ItemType.note) as Array<Note>;
+	$: visibleNotes = $searchState
+		? notes.filter(
+				(note) =>
+					note.name?.includes($searchState as string) ||
+					note.note?.includes($searchState as string) ||
+					note.tags?.some((tag) => tag.includes($searchState as string))
+		  )
+		: notes;
+	$: logins = $sourceFile?.filter((item) => item?.type === ItemType.login) as Array<Login>;
+	$: visibleLogins = $searchState
+		? logins.filter(
+				(login) =>
+					login.name?.includes($searchState as string) ||
+					login.url?.includes($searchState as string) ||
+					login.username?.includes($searchState as string) ||
+					login.tags?.some((tag) => tag.includes($searchState as string))
+		  )
+		: logins;
 
-	onMount(() => {
-		if (!$sourceFile.length) {
-			loading = true;
-			fetch('/api/get-file')
-				.then(async (response) => {
-					if (response.status === 200) {
-						const res = await response.json();
-						sourceFile.set(res.file);
-						loading = false;
-						return;
-					}
-					if (response.status === 404) {
-						notFound = true;
-					}
-				})
-				.catch((error) => {
-					console.error('+page.svelte:25 ~ fetch ~ error', error);
-				});
+	onMount(async () => {
+		if (!$sourceFileExists) {
+			const FetchFile = await import('$lib/functions/fetch-file');
+			await FetchFile.default();
 		}
 	});
 </script>
@@ -39,28 +48,29 @@
 	<meta name="ANAA" content="Another Nice Auth App" />
 </svelte:head>
 
-{#if notFound}
-	<div class="pt-10">
-		Please create a File in <a class="hover:underline" href="/user-settings">User Settings</a>
+{#if $notFoundState}
+	<div class="pt-10 flex justify-center">
+		Please create a File in &nbsp;<a class="hover:underline" href="/user-settings">User Settings</a>
 	</div>
 {:else}
-	<section class="flex flex-col items-center mt-2">
-		{#if loading}
-			<span class="flex h-5/6 justify-center items-center">
-				<Loading />
-			</span>
-		{:else}
-			{#each logins as login}
-				{#if login}
+	{#if $loadingState}
+		<span class="flex h-5/6 justify-center items-center">
+			<Loading />
+		</span>
+	{/if}
+	<section>
+		<div class="flex flex-col mt-2 w-4/5 m-auto">
+			{#each visibleLogins as login}
+				{#if login && (!$filterState || $filterState === 'logins')}
 					<LoginItem {login} />
 				{/if}
 			{/each}
-			{#each notes as note}
-				{#if note}
+			{#each visibleNotes as note}
+				{#if note && (!$filterState || $filterState === 'notes')}
 					<NoteItem {note} />
 				{/if}
 			{/each}
-		{/if}
+		</div>
 		<Fab />
 	</section>
 {/if}

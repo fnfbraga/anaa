@@ -1,6 +1,6 @@
 import { SvelteKitAuth } from '@auth/sveltekit';
 import GoogleProvider from '@auth/core/providers/google';
-import { googleClientId, googleClientSecret } from '$lib/config';
+import { allowedUsers, googleClientId, googleClientSecret } from '$lib/config';
 
 export const svelteKitAuth = SvelteKitAuth({
 	providers: [
@@ -19,6 +19,9 @@ export const svelteKitAuth = SvelteKitAuth({
 	],
 	callbacks: {
 		async session({ session, token }) {
+			if (!allowedUsers.includes(session.user?.email || '')) {
+				throw new Error('Not allowed');
+			}
 			return { ...session, user: { ...session.user, refreshToken: token.refreshToken } };
 		},
 		async jwt({ token, account }) {

@@ -1,11 +1,12 @@
-import { getSourcedFileById, getUserFile } from '$lib/functions/google-drive';
+import { getSourcedFileById, getUserFile, updateSourceFile } from '$lib/functions/google-drive';
+import type { RequestHandler } from './$types';
 
-export async function GET({ locals }: any) {
+export const GET = (async ({ locals }) => {
 	const session = await locals.getSession();
-	if (!session.user) {
+	if (!session?.user) {
 		return new Response('Not Authorized', { status: 401 });
 	}
-	const file = await getUserFile(session.user.email);
+	const file = await getUserFile(session.user.email || '');
 	if (!file) {
 		return new Response('No file', { status: 404 });
 	}
@@ -15,4 +16,18 @@ export async function GET({ locals }: any) {
 			file: JSON.parse(sourceFile || '[]')
 		})
 	);
-}
+}) satisfies RequestHandler;
+
+export const POST = (async ({ locals, request }) => {
+	const session = await locals.getSession();
+	if (!session?.user) {
+		return new Response('Not Authorized', { status: 401 });
+	}
+	const requestData = await request.json();
+	const file = await getUserFile(session.user.email || '');
+	if (!file) {
+		return new Response('No file', { status: 404 });
+	}
+	await updateSourceFile(file?.id || '', requestData);
+	return new Response(JSON.stringify('ok'));
+}) satisfies RequestHandler;

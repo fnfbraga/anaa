@@ -18,7 +18,7 @@
 		class="flex flex-col w-screen h-screen items-center justify-between align-middle "
 	>
 		<Header />
-		<main class="mb-auto h-10 ">
+		<main class="mb-auto h-10 w-screen">
 			{#if $navigating}
 				<Loading />
 			{:else}

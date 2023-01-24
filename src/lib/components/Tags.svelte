@@ -4,7 +4,7 @@
 </script>
 
 {#if tags}
-	<span class="flex flex-wrap space-x-1 ">
+	<span class="flex flex-wrap space-x-1">
 		{#each tags as tag}
 			<Tag {tag} />
 		{/each}

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { handleCopytoClipBoard } from '$lib/functions/copy-to-cllipboard';
 	import { popperOptions } from '$lib/misc';
 	import { createPopperActions } from 'svelte-popperjs';
 	import CopyIcon from './CopyIcon.svelte';
@@ -16,25 +17,30 @@
 	on:focus={() => (showTooltip = true)}
 	on:mouseleave={() => (showTooltip = false)}
 >
-	{#if showTooltip}
+	{#if showTooltip && url}
 		<div class="bg-black p-2 rounded-md text-white" id="tooltip" use:popperUrlContent>
 			{url}
 		</div>
 	{/if}
-	<span class="flex items-center h-6 ">
-		<p class="truncate" use:urlRef>
+	<span class="flex items-center h-6">
+		<p class="truncate w-3/4" use:urlRef>
 			{#if edit}
-				<Input on:input inputValue={url} />
+				<div class="mt-8">
+					<Input on:input inputValue={url} label="url" />
+				</div>
 			{:else}
 				<p class="text-xs">{url}</p>
 			{/if}
 		</p>
-		<CopyIcon
-			on:keypress={() => alert('copy')}
-			on:click={() => {
-				navigator.clipboard.writeText(url || '');
-				alert(`copied ${url}`);
-			}}
-		/>
+		<span class={edit ? 'mt-8' : ''}>
+			<CopyIcon
+				disabled={!url}
+				on:keypress={() =>
+					handleCopytoClipBoard({ message: `url copied to clipboard`, content: url })}
+				on:click={() => {
+					handleCopytoClipBoard({ message: `url copied to clipboard`, content: url });
+				}}
+			/>
+		</span>
 	</span>
 </span>

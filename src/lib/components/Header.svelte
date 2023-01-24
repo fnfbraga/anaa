@@ -1,10 +1,17 @@
 <script lang="ts">
+	import { filterState, searchState } from '$lib/store';
 	import HeaderButton from './HeaderButton.svelte';
 	import NavUserActions from './NavUserActions.svelte';
 	let selected: 'logins' | 'notes' | undefined = undefined;
 
 	const handleSelect = (value: 'logins' | 'notes') => {
 		selected === value ? (selected = undefined) : (selected = value);
+		filterState.set(selected);
+	};
+
+	const onSearchInput = (event: Event) => {
+		event.preventDefault();
+		searchState.set((event.target as any)?.value);
 	};
 </script>
 
@@ -36,9 +43,10 @@
 		<input
 			type="search"
 			name="search"
-			class="w-11/12 py-2 text-white bg-gray-100 rounded-md pl-10 focus:outline-none focus:text-gray-900"
+			class="w-11/12 py-2 text-white bg-gray-100 rounded-md pl-10 focus:outline-none text-gray-900"
 			placeholder="Search..."
 			autocomplete="off"
+			on:input={onSearchInput}
 		/>
 	</div>
 	<NavUserActions />

@@ -22,10 +22,10 @@
 			{name}
 		</div>
 	{/if}
-	<span class="flex items-center h-6 ">
-		<p class="truncate" use:nameRef>
+	<span class="flex items-center h-6">
+		<p class="truncate w-3/4" use:nameRef>
 			{#if edit}
-				<Input on:input inputValue={name} />
+				<Input label="name" on:input inputValue={name} />
 			{:else}
 				<p class="text-xs">{name}</p>
 			{/if}

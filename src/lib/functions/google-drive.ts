@@ -1,6 +1,8 @@
 import { googleClientSecret } from '$lib/config';
 import crypto from 'crypto';
 import googleDrive from '$lib/services/google-drive';
+import type { Note } from '$lib/models/notes';
+import type { Login } from '$lib/models/logins';
 
 const algorithm = 'aes-256-ctr';
 const iv = crypto.randomBytes(16);
@@ -36,14 +38,30 @@ function decrypt(file: EncryptedFile) {
 	return decrypted.toString();
 }
 
+export const updateSourceFile = async (fileId: string, updatedFile: Array<Note | Login>) => {
+	try {
+		const res = await googleDrive.files.update({
+			fileId,
+			media: {
+				mimeType: 'application/db',
+				body: JSON.stringify(encrypt(JSON.stringify(updatedFile)))
+			},
+			fields: 'id'
+		});
+		return res.data.id;
+	} catch (error) {
+		console.error(error);
+	}
+};
+
 export const createSourceFile = async (parentFolderId: string, user: any) => {
 	try {
 		const res = await googleDrive.files.create({
 			media: {
 				mimeType: 'application/db',
-				body: JSON.stringify(encrypt(JSON.stringify([{ url: 'test' }])))
+				body: JSON.stringify(encrypt(JSON.stringify([])))
 			},
-			fields: 'id, name',
+			fields: 'id',
 			requestBody: {
 				name: fileName,
 				parents: [parentFolderId],

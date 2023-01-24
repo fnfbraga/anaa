@@ -1,4 +1,5 @@
 <script lang="ts">
+	export let disabled = false;
 </script>
 
 <span class="h-6 w-6">
@@ -10,7 +11,9 @@
 		viewBox="0 0 24 24"
 		stroke-width="1.5"
 		stroke="currentColor"
-		class="w-6 h-6 cursor-pointer ml-1 rounded-full hover:bg-slate-200 p-1"
+		class="w-6 h-6 ml-1 rounded-full  p-1 {disabled
+			? 'text-gray-300'
+			: 'cursor-pointer hover:bg-slate-200'}"
 	>
 		<path
 			stroke-linecap="round"
