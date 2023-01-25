@@ -10,16 +10,18 @@
 	import type { PageData } from './$types';
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
-	import postUpdate from '$lib/functions/post-update';
 	import Loading from '$lib/components/Loading.svelte';
-	import deleteItem from '$lib/functions/delete-item';
+	import deleteItem from '$lib/functions/rest/delete-item';
+	import putItem from '$lib/functions/rest/put-item';
+	import type { Note } from '$lib/models/notes';
 
 	export let data: PageData;
 	let edit = !data.uuid;
 	let setDelete = false;
 
 	const Note = z.object({
-		uuid: z.string().optional(),
+		uuid: z.string(),
+		type: z.number(),
 		name: z.string().min(1),
 		note: z.string().optional(),
 		tags: z.array(z.string()).optional()
@@ -48,7 +50,9 @@
 	};
 	const handleSubmit = async () => {
 		if (!data.uuid) {
-			sourceFile.update((items) => [...items, { ...values, uuid: uuidv4() }] as any);
+			const newNote = { ...values, uuid: uuidv4() };
+			values = newNote;
+			sourceFile.update((items) => [...items, newNote] as Array<Note>);
 		} else {
 			sourceFile.update(
 				(values) =>
@@ -58,7 +62,7 @@
 					}) as any
 			);
 		}
-		await postUpdate($sourceFile as any);
+		await putItem(values);
 		goto('/');
 		edit = false;
 	};
@@ -72,7 +76,7 @@
 	onMount(async () => {
 		if (data.uuid) {
 			if (!$sourceFileExists) {
-				const FetchFile = await import('$lib/functions/fetch-file');
+				const FetchFile = await import('$lib/functions/rest/fetch-file');
 				await FetchFile.default();
 			}
 			const uuid = $sourceFile.find((item) => item?.uuid == data.uuid);

@@ -39,6 +39,5 @@ You can preview the production build with `npm run preview`.
 
 TO-DO:
 
-- PUT Operation
 - upload json file
 - download to json

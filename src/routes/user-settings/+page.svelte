@@ -2,7 +2,7 @@
 	import { page } from '$app/stores';
 	import Button from '$lib/components/Button.svelte';
 	import Modal from '$lib/components/Modal.svelte';
-	import { handleCopytoClipBoard } from '$lib/functions/copy-to-cllipboard';
+	import { handleCopytoClipBoard } from '$lib/functions/copy-to-clipboard';
 	import type { ActionData, PageData } from './$types';
 	$: clientEmail = $page.data.clientEmail;
 	const emailId = 'service-account-email';

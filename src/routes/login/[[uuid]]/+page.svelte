@@ -12,16 +12,17 @@
 	import { onMount } from 'svelte';
 	import Loading from '$lib/components/Loading.svelte';
 	import { goto } from '$app/navigation';
-	import postUpdate from '$lib/functions/post-update';
-	import deleteItem from '$lib/functions/delete-item';
+	import deleteItem from '$lib/functions/rest/delete-item';
+	import putItem from '$lib/functions/rest/put-item';
 
 	export let data: PageData;
 	let edit = !data.uuid;
 	let setDelete = false;
 
 	const Login = z.object({
-		uuid: z.string().optional(),
+		uuid: z.string(),
 		name: z.string().min(1),
+		type: z.number(),
 		url: z.string().optional(),
 		username: z.string().optional(),
 		password: z.string().optional(),
@@ -54,7 +55,9 @@
 
 	const handleSubmit = async () => {
 		if (!data.uuid) {
-			sourceFile.update((items) => [...items, { ...values, uuid: uuidv4() }] as any);
+			const newLogin = { ...values, uuid: uuidv4() };
+			values = newLogin;
+			sourceFile.update((items) => [...items, newLogin] as Array<LoginType>);
 		} else {
 			sourceFile.update(
 				(values) =>
@@ -64,7 +67,7 @@
 					}) as any
 			);
 		}
-		await postUpdate($sourceFile as any);
+		await putItem(values);
 		goto('/');
 		edit = false;
 	};
@@ -79,7 +82,7 @@
 
 	onMount(async () => {
 		if (!$sourceFileExists) {
-			const FetchFile = await import('$lib/functions/fetch-file');
+			const FetchFile = await import('$lib/functions/rest/fetch-file');
 			await FetchFile.default();
 		}
 		if (data.uuid) {

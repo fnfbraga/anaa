@@ -4,7 +4,7 @@
 	import CopyIcon from './CopyIcon.svelte';
 	import ShowIcon from './ShowIcon.svelte';
 	import Input from './Input.svelte';
-	import { handleCopytoClipBoard } from '$lib/functions/copy-to-cllipboard';
+	import { handleCopytoClipBoard } from '$lib/functions/copy-to-clipboard';
 
 	const [passwordRef, popperPasswordContent] = createPopperActions(popperOptions);
 	export let isModal = true;

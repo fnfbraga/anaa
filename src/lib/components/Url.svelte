@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { handleCopytoClipBoard } from '$lib/functions/copy-to-cllipboard';
+	import { handleCopytoClipBoard } from '$lib/functions/copy-to-clipboard';
 	import { popperOptions } from '$lib/misc';
 	import { createPopperActions } from 'svelte-popperjs';
 	import CopyIcon from './CopyIcon.svelte';

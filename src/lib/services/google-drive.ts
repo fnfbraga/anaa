@@ -190,3 +190,20 @@ export const deleteRecordFromFile = async (fileId: string, recordId: string) => 
 	const updatedFile = parsedSourceFile.filter((item: any) => item?.uuid !== recordId);
 	await updateSourceFile(fileId, updatedFile);
 };
+
+export const updateOrAddRecordFromFile = async (fileId: string, record: Note | Login) => {
+	const sourceFile = (await getSourcedFileById(fileId)) || JSON.stringify([]);
+	const parsedSourceFile = JSON.parse(sourceFile);
+	const oldRecord: Note | Login | null = parsedSourceFile.find(
+		(item: any) => item?.uuid === record.uuid
+	);
+	if (oldRecord) {
+		const updatedFile = parsedSourceFile.map((item: any) =>
+			item.uuid === oldRecord.uuid ? record : item
+		);
+		await updateSourceFile(fileId, updatedFile);
+	} else {
+		const updatedFile = [...parsedSourceFile, record];
+		await updateSourceFile(fileId, updatedFile);
+	}
+};

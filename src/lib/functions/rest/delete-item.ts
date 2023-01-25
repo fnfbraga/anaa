@@ -1,8 +1,10 @@
 import { AlertEnum } from '$lib/models/misc';
 import { alerts } from '$lib/store';
+import fetchFile from './fetch-file';
 
 export default async (recordId: string) => {
-	const handleError = () =>
+	const handleError = async () => {
+		await fetchFile();
 		alerts.update((alerts) => [
 			...alerts,
 			{
@@ -11,6 +13,7 @@ export default async (recordId: string) => {
 				createdOn: new Date().getTime()
 			}
 		]);
+	};
 
 	fetch('/api/get-file', { method: 'DELETE', body: JSON.stringify(recordId) })
 		.then((response) => {

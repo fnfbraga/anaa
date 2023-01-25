@@ -38,7 +38,7 @@
 
 	onMount(async () => {
 		if (!$sourceFileExists) {
-			const FetchFile = await import('$lib/functions/fetch-file');
+			const FetchFile = await import('$lib/functions/rest/fetch-file');
 			await FetchFile.default();
 		}
 	});
