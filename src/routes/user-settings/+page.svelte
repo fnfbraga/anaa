@@ -12,6 +12,19 @@
 		handleCopytoClipBoard({ message: `${text} copied to clipboard`, elementId: emailId });
 	}
 	export let data: PageData;
+	const keys = [
+		'kind',
+		'id',
+		'createdTime',
+		'modifiedTime',
+		'modifiedByMeTime',
+		'name',
+		'version',
+		'size'
+	];
+	const details = Object.entries(data.responseData || {})
+		.map(([key, value]) => (keys.includes(key) ? { [key]: value } : null))
+		.filter(Boolean);
 	export let form: ActionData;
 	$: loading = false;
 	$: folder = data.responseData;
@@ -20,25 +33,40 @@
 
 <Modal closeRoute="/">
 	{#if data?.responseData}
-		<p>
-			You have shared the folder <strong
-				><a href={`https://drive.google.com/file/d/${folder?.id}`} target="_blank" rel="noreferrer"
-					>{folder?.name}</a
-				></strong
-			> with this app
-		</p>
-		<form class="p-4" method="post" on:submit={() => (loading = true)}>
-			{#if deleteFile}
-				<Button color="hover:border-b-orange-500" disabled={loading} formaction="?/deleteFile"
-					>{loading ? 'Deleting File...' : 'Confirm Delete File'}</Button
-				>
-				{#if !loading}
-					<Button on:click={() => (deleteFile = false)}>Cancel File</Button>
+		<div class="p-6">
+			<p class="mb-4 ml-6">
+				You have shared the folder <strong
+					><a
+						href={`https://drive.google.com/file/d/${folder?.id}`}
+						target="_blank"
+						rel="noreferrer">{folder?.name}</a
+					></strong
+				> with this app
+			</p>
+			<ul class="ml-6">
+				{#each details as detail}
+					<li><strong>{Object.keys(detail || {})[0]}</strong>: {Object.values(detail || {})[0]}</li>
+				{/each}
+			</ul>
+			<form class="p-4" method="post" on:submit={() => (loading = true)}>
+				{#if deleteFile}
+					<Button color="hover:border-b-orange-500" disabled={loading} formaction="?/deleteFile"
+						>{loading ? 'Deleting File...' : 'Confirm Delete File'}</Button
+					>
+					{#if !loading}
+						<Button on:click={() => (deleteFile = false)}>Cancel File</Button>
+					{/if}
+				{:else}
+					<Button on:click={() => (deleteFile = true)}>Delete File</Button>
 				{/if}
-			{:else}
-				<Button on:click={() => (deleteFile = true)}>Delete File</Button>
-			{/if}
-		</form>
+			</form>
+			<p class="text-lg font-semibold ml-6">to-do:</p>
+			<ul class="ml-6">
+				<li>PWA</li>
+				<li>upload json</li>
+				<li>download json</li>
+			</ul>
+		</div>
 	{:else}
 		<form class="p-4" method="post" on:submit={() => (loading = true)}>
 			<ul>

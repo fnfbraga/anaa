@@ -1,7 +1,7 @@
 import type { Actions, PageServerLoad } from './$types';
 import googleDriveService from '$lib/services/google-drive';
 import { serviceAccountCredentials } from '$lib/config';
-import { createSourceFile, getUserFile, getUserParentFolder } from '$lib/functions/google-drive';
+import { createSourceFile, getUserFile, getUserParentFolder } from '$lib/services/google-drive';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	const userEmail = (await locals.getSession())?.user?.email;

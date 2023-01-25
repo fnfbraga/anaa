@@ -140,9 +140,11 @@ export const getUserFile = async (userEmail: string) => {
 					fields: '*'
 				});
 				if (permissions.data.emailAddress === userEmail) {
-					const parentFile = (await googleDrive.files.list()).data.files?.find(
-						(file) => file.id === fileId
-					);
+					const parentFile = (
+						await googleDrive.files.list({
+							fields: '*'
+						})
+					).data.files?.find((file) => file.id === fileId);
 					parentFile && userFiles.push(parentFile);
 				}
 			}
