@@ -1,6 +1,5 @@
-import adapter from '@sveltejs/adapter-cloudflare';
+import adapter from '@sveltejs/adapter-auto';
 import { vitePreprocess } from '@sveltejs/kit/vite';
-import ESBuildNodePolyfillsPlugin from 'esbuild-plugin-node-polyfills';
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -9,12 +8,7 @@ const config = {
 	preprocess: vitePreprocess(),
 
 	kit: {
-		adapter: adapter({
-			target: 'esnext',
-			minify: false,
-			logLevel: 'error',
-			plugins: [ESBuildNodePolyfillsPlugin]
-		})
+		adapter: adapter()
 	}
 };
 
