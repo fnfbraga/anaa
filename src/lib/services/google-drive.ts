@@ -4,7 +4,7 @@ import { googleClientSecret } from '$lib/config';
 import googleDrive from '$lib/services/google-drive';
 import type { Note } from '$lib/models/notes';
 import type { Login } from '$lib/models/logins';
-const { randomBytes, createHash, createCipheriv, createDecipheriv } = await import('node:crypto');
+import { randomBytes, createHash, createCipheriv, createDecipheriv } from 'node:crypto';
 
 const scopes = [
 	'https://www.googleapis.com/auth/drive',
