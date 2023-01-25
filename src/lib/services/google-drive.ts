@@ -1,10 +1,10 @@
 import { serviceAccountCredentials } from '$lib/config';
 import { google } from 'googleapis';
 import { googleClientSecret } from '$lib/config';
-import crypto from 'crypto';
 import googleDrive from '$lib/services/google-drive';
 import type { Note } from '$lib/models/notes';
 import type { Login } from '$lib/models/logins';
+const { randomBytes, createHash, createCipheriv, createDecipheriv } = await import('node:crypto');
 
 const scopes = [
 	'https://www.googleapis.com/auth/drive',
@@ -22,7 +22,7 @@ const auth = new google.auth.JWT(
 export default google.drive({ version: 'v3', auth });
 
 const algorithm = 'aes-256-ctr';
-const iv = crypto.randomBytes(16);
+const iv = randomBytes(16);
 
 interface EncryptedFile {
 	iv: string;
@@ -30,14 +30,10 @@ interface EncryptedFile {
 }
 const fileName = 'anaa';
 
-const key = crypto
-	.createHash('sha256')
-	.update(googleClientSecret)
-	.digest('base64')
-	.substring(0, 32);
+const key = createHash('sha256').update(googleClientSecret).digest('base64').substring(0, 32);
 
 function encrypt(text: string) {
-	const cipher = crypto.createCipheriv(algorithm, Buffer.from(key), iv);
+	const cipher = createCipheriv(algorithm, Buffer.from(key), iv);
 	let encrypted = cipher.update(text);
 	encrypted = Buffer.concat([encrypted, cipher.final()]);
 	return {
@@ -49,7 +45,7 @@ function encrypt(text: string) {
 function decrypt(file: EncryptedFile) {
 	const iv = Buffer.from(file.iv, 'hex');
 	const encryptedText = Buffer.from(file.encryptedData, 'hex');
-	const decipher = crypto.createDecipheriv(algorithm, Buffer.from(key), iv);
+	const decipher = createDecipheriv(algorithm, Buffer.from(key), iv);
 	let decrypted = decipher.update(encryptedText);
 	decrypted = Buffer.concat([decrypted, decipher.final()]);
 	return decrypted.toString();

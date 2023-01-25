@@ -60,11 +60,13 @@
 					<Button on:click={() => (deleteFile = true)}>Delete File</Button>
 				{/if}
 			</form>
-			<p class="text-lg font-semibold ml-6">to-do:</p>
+			<p class="text-lg font-semibold ml-6">Upcoming features</p>
 			<ul class="ml-6">
 				<li>PWA</li>
+				<li>Password generator</li>
 				<li>upload json</li>
 				<li>download json</li>
+				<li>Autocomplete for Tags Input</li>
 			</ul>
 		</div>
 	{:else}
