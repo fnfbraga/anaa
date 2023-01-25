@@ -11,7 +11,7 @@ const config = {
 	kit: {
 		adapter: adapter({
 			target: 'esnext',
-			minify: true,
+			minify: false,
 			logLevel: 'error',
 			plugins: [ESBuildNodePolyfillsPlugin]
 		})
