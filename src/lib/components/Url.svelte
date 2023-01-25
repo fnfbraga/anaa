@@ -26,7 +26,7 @@
 		<p class="truncate w-3/4" use:urlRef>
 			{#if edit}
 				<div class="mt-8">
-					<Input on:input inputValue={url} label="url" />
+					<Input on:input inputValue={url} label="url" inputType="url" />
 				</div>
 			{:else}
 				<p class="text-xs">{url}</p>

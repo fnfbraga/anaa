@@ -9,10 +9,10 @@
 	import { v4 as uuidv4 } from 'uuid';
 	import type { PageData } from './$types';
 	import { onMount } from 'svelte';
-	import fetchFile from '$lib/functions/fetch-file';
 	import { goto } from '$app/navigation';
 	import postUpdate from '$lib/functions/post-update';
 	import Loading from '$lib/components/Loading.svelte';
+	import deleteItem from '$lib/functions/delete-item';
 
 	export let data: PageData;
 	let edit = !data.uuid;
@@ -63,9 +63,9 @@
 		edit = false;
 	};
 	const handleDelete = async () => {
-		if (!data.uuid) return;
+		if (!data.uuid || !values.uuid) return;
 		sourceFile.update((items) => items.filter((item) => item?.uuid !== values.uuid));
-		await postUpdate($sourceFile);
+		await deleteItem(values.uuid);
 		setDelete = false;
 		goto('/');
 	};

@@ -13,6 +13,7 @@
 	import Loading from '$lib/components/Loading.svelte';
 	import { goto } from '$app/navigation';
 	import postUpdate from '$lib/functions/post-update';
+	import deleteItem from '$lib/functions/delete-item';
 
 	export let data: PageData;
 	let edit = !data.uuid;
@@ -69,9 +70,9 @@
 	};
 
 	const handleDelete = async () => {
-		if (!data.uuid) return;
+		if (!data.uuid || !values.uuid) return;
 		sourceFile.update((items) => items.filter((item) => item?.uuid !== values.uuid));
-		await postUpdate($sourceFile);
+		await deleteItem(values.uuid);
 		setDelete = false;
 		goto('/');
 	};
@@ -140,6 +141,7 @@
 				name="url"
 				label="url"
 				aria-label="Url"
+				inputType="url"
 			/>
 			<Input
 				id="username"
