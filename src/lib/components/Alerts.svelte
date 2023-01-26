@@ -37,7 +37,7 @@
 			class="{getColor(alert.type)} bottom-10 fixed z-90 left-16 px-4 py-3 rounded mb-1"
 			role="alert"
 		>
-			<strong class="font-bold mr-9">{alert?.message}{index}</strong>
+			<strong class="font-bold mr-9">{alert?.message}</strong>
 			<span class="absolute top-0 bottom-0 right-0 px-4 py-3">
 				<svg
 					class="fill-current h-6 w-6 {getColor(alert.type)}"
