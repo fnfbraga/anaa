@@ -19,7 +19,7 @@
 		"@neoconfetti/svelte": "^1.0.0",
 		"@popperjs/core": "^2.11.6",
 		"@sveltejs/adapter-auto": "^1.0.0",
-		"@sveltejs/adapter-cloudflare": "^1.1.0",
+		"@sveltejs/adapter-vercel": "^1.0.5",
 		"@sveltejs/kit": "^1.0.0",
 		"@types/cookie": "^0.5.1",
 		"@types/gapi": "^0.0.43",
@@ -27,7 +27,6 @@
 		"@types/uuid": "^9.0.0",
 		"@typescript-eslint/eslint-plugin": "^5.45.0",
 		"@typescript-eslint/parser": "^5.45.0",
-		"@vite-pwa/sveltekit": "^0.1.2",
 		"autoprefixer": "^10.4.13",
 		"eslint": "^8.28.0",
 		"eslint-config-prettier": "^8.5.0",
@@ -47,8 +46,5 @@
 		"vitest": "^0.25.3",
 		"zod": "^3.20.2"
 	},
-	"type": "module",
-	"dependencies": {
-		"@sveltejs/adapter-vercel": "^1.0.5"
-	}
+	"type": "module"
 }

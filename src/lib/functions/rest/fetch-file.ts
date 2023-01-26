@@ -1,4 +1,5 @@
 import { loadingState, notFoundState, sourceFile, sourceFileExists } from '$lib/store';
+import { error } from '@sveltejs/kit';
 
 export default async () => {
 	loadingState.set(true);
@@ -19,11 +20,11 @@ export default async () => {
 			if (response.status === 404) {
 				notFoundState.set(true);
 				loadingState.set(false);
+				return;
 			}
-			return;
 		})
-		.catch((error) => {
+		.catch((e) => {
 			loadingState.set(false);
-			error && console.error('+page.svelte:25 ~ fetch ~ error', error);
+			throw error(500, e);
 		});
 };

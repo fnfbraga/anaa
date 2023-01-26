@@ -13,6 +13,7 @@
 				return 'bg-green-100 border border-green-400 text-green-700';
 		}
 	};
+
 	const handleRemoveAlert = (alertIndex: number) => {
 		alerts.update((alerts) => alerts.filter((_, i) => alertIndex !== i));
 	};
@@ -32,8 +33,11 @@
 
 {#each $alerts as alert, index}
 	{#if alert && alert.createdOn + 3000 > time.getTime()}
-		<div class="{getColor(alert.type)} px-4 py-3 rounded relative mb-1" role="alert">
-			<strong class="font-bold mr-9">{alert?.message}</strong>
+		<div
+			class="{getColor(alert.type)} bottom-10 fixed z-90 left-16 px-4 py-3 rounded mb-1"
+			role="alert"
+		>
+			<strong class="font-bold mr-9">{alert?.message}{index}</strong>
 			<span class="absolute top-0 bottom-0 right-0 px-4 py-3">
 				<svg
 					class="fill-current h-6 w-6 {getColor(alert.type)}"

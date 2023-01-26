@@ -63,7 +63,7 @@ export const updateSourceFile = async (fileId: string, updatedFile: Array<Note |
 		});
 		return res.data.id;
 	} catch (error) {
-		console.error(error);
+		throw new Error(JSON.stringify(error));
 	}
 };
 
@@ -83,7 +83,7 @@ export const createSourceFile = async (parentFolderId: string, user: any) => {
 		});
 		return res.data.id;
 	} catch (error) {
-		console.error(error);
+		throw new Error(JSON.stringify(error));
 	}
 };
 
@@ -92,7 +92,7 @@ export const getSourcedFileById = async (fileId: string) => {
 		const file = await googleDrive.files.get({ fileId, alt: 'media' });
 		return decrypt(file.data as any);
 	} catch (error) {
-		console.error(error);
+		throw new Error(JSON.stringify(error));
 	}
 };
 
@@ -101,7 +101,7 @@ export const getSourcedFileId = async () => {
 		const files = await googleDrive.files.list({});
 		return files.data.files?.find((file) => file.name === fileName)?.id;
 	} catch (error) {
-		console.error(error);
+		throw new Error(JSON.stringify(error));
 	}
 };
 
@@ -114,7 +114,7 @@ export const deleteSourceFileById = async (fileId: string) => {
 		});
 		return fileId;
 	} catch (error) {
-		console.error(error);
+		throw new Error(JSON.stringify(error));
 	}
 };
 
@@ -148,38 +148,42 @@ export const getUserFile = async (userEmail: string) => {
 		const userFile = userFiles.filter(Boolean)[0];
 		return userFile;
 	} catch (error) {
-		console.error(error);
+		throw new Error(JSON.stringify(error));
 	}
 };
 
 export const getUserParentFolder = async (userEmail: string) => {
-	const driveFiles = await googleDrive.files.list({});
-	if (!driveFiles?.data?.files) return null;
-	const files = driveFiles.data.files.filter(
-		(file) => file.mimeType === 'application/vnd.google-apps.folder'
-	);
-	const userFiles = [];
-	for await (const file of files) {
-		const fileId = file.id || '';
-		const permissionsListResponse = await googleDrive.permissions.list({ fileId });
-		if (!permissionsListResponse.data.permissions) return null;
-		for await (const permission of permissionsListResponse.data.permissions) {
-			const permissions = await googleDrive.permissions.get({
-				permissionId: permission.id || '',
-				fileId: file.id || '',
-				fields: 'emailAddress'
-			});
+	try {
+		const driveFiles = await googleDrive.files.list({});
+		if (!driveFiles?.data?.files) return null;
+		const files = driveFiles.data.files.filter(
+			(file) => file.mimeType === 'application/vnd.google-apps.folder'
+		);
+		const userFiles = [];
+		for await (const file of files) {
+			const fileId = file.id || '';
+			const permissionsListResponse = await googleDrive.permissions.list({ fileId });
+			if (!permissionsListResponse.data.permissions) return null;
+			for await (const permission of permissionsListResponse.data.permissions) {
+				const permissions = await googleDrive.permissions.get({
+					permissionId: permission.id || '',
+					fileId: file.id || '',
+					fields: 'emailAddress'
+				});
 
-			if (permissions.data.emailAddress === userEmail) {
-				const parentFile = (await googleDrive.files.list()).data.files?.find(
-					(file) => file.id === fileId
-				);
-				parentFile && userFiles.push(parentFile);
+				if (permissions.data.emailAddress === userEmail) {
+					const parentFile = (await googleDrive.files.list()).data.files?.find(
+						(file) => file.id === fileId
+					);
+					parentFile && userFiles.push(parentFile);
+				}
 			}
 		}
+		const userFile = userFiles.filter(Boolean)[0];
+		return userFile;
+	} catch (error) {
+		throw new Error(JSON.stringify(error));
 	}
-	const userFile = userFiles.filter(Boolean)[0];
-	return userFile;
 };
 
 export const deleteRecordFromFile = async (fileId: string, recordId: string) => {
