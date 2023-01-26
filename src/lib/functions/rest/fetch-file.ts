@@ -4,7 +4,7 @@ export default async () => {
 	loadingState.set(true);
 	const url = window?.location
 		? `${window.location.protocol}//${window.location.hostname}${
-				window.location.port ? ':' + window.location.port : null
+				window.location.port ? ':' + window.location.port : ''
 		  }`
 		: '';
 	await fetch(`${url}/api/get-file`)
