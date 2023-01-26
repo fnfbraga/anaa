@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { signIn } from '@auth/sveltekit/client';
 	import GoogleLogo from '$lib/components/GoogleLogo.svelte';
-	import Footer from './Footer.svelte';
+	import { goto } from '$app/navigation';
+	import { browser } from '$app/environment';
 
 	export let loading: boolean;
 
@@ -11,7 +12,12 @@
 			.then((v) => {
 				loading = false;
 			})
-			.catch((e) => console.error(e));
+			.catch((e) => console.error(e))
+			.finally(() => {
+				if (browser) {
+					goto('/');
+				}
+			});
 	};
 </script>
 
@@ -28,7 +34,5 @@
 			<GoogleLogo />
 			<p class="ml-2">{!loading ? 'Sign In with Google' : 'Loading...'}</p>
 		</button>
-		<p class="text-xs mt-6">Password storage</p>
-		<Footer />
 	</div>
 </div>

@@ -1,8 +1,13 @@
 import { SvelteKitAuth } from '@auth/sveltekit';
 import GoogleProvider from '@auth/core/providers/google';
 import { allowedUsers, googleClientId, googleClientSecret } from '$lib/config';
+import { AUTH_SECRET } from '$env/static/private';
+import { error } from '@sveltejs/kit';
 
 export const svelteKitAuth = SvelteKitAuth({
+	trustHost: true,
+	debug: true,
+	secret: AUTH_SECRET,
 	providers: [
 		// @ts-expect-error -- ignore
 		GoogleProvider({
@@ -20,7 +25,7 @@ export const svelteKitAuth = SvelteKitAuth({
 	callbacks: {
 		async session({ session, token }) {
 			if (!allowedUsers.includes(session.user?.email || '')) {
-				throw new Error('Not allowed');
+				error(401, 'not authorized');
 			}
 			return { ...session, user: { ...session.user, refreshToken: token.refreshToken } };
 		},
