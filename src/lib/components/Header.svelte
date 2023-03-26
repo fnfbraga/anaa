@@ -16,7 +16,7 @@
 </script>
 
 <nav
-	class="shadow bg-white border-gray-400 px-2 sm:px-4 py-2.5 rounded flex justify-between w-full"
+	class="sticky top-0  shadow bg-white border-gray-400 px-2 sm:px-4 py-2.5 rounded flex justify-between w-full"
 >
 	<span class="flex align-middle justify-between space-x-3">
 		<HeaderButton selected={selected === 'logins'} on:click={() => handleSelect('logins')}

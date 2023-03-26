@@ -50,21 +50,22 @@
 	<meta name="ANAA" content="Another Nice Auth App" />
 </svelte:head>
 
-{#if $page.data.session?.user}
-	<Header />
-	{#if $notFoundState}
-		<div class="pt-10 flex justify-center">
-			Please create a File in &nbsp;<a class="hover:underline" href="/user-settings"
-				>User Settings</a
-			>
-		</div>
-	{:else}
-		{#if $loadingState}
-			<span class="flex h-5/6 justify-center items-center">
-				<Loading />
-			</span>
-		{/if}
-		<section>
+<div>
+	{#if $page.data.session?.user}
+		<Header />
+		{#if $notFoundState}
+			<div class="pt-10 flex justify-center">
+				Please create a File in &nbsp;<a class="hover:underline" href="/user-settings"
+					>User Settings</a
+				>
+			</div>
+		{:else}
+			{#if $loadingState}
+				<span class="flex h-5/6 justify-center items-center">
+					<Loading />
+				</span>
+			{/if}
+
 			<div class="flex flex-col mt-2 w-4/5 m-auto">
 				{#each visibleLogins as login}
 					{#if login && (!$filterState || $filterState === 'logins')}
@@ -78,6 +79,6 @@
 				{/each}
 			</div>
 			<Fab />
-		</section>
+		{/if}
 	{/if}
-{/if}
+</div>
