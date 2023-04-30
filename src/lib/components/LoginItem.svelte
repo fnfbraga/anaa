@@ -10,7 +10,7 @@
 	export let login: Login;
 </script>
 
-<div class="flex m-2 space-x-4 w-full rounded shadow p-4 pl-8 hover:shadow-md">
+<div class="flex m-1 space-x-4 w-full rounded shadow p-1 pl-8 hover:shadow-md">
 	<span class="w-1/6 lg:w-2/12 p-2 cursor-pointer">
 		<Name name={login.name} handleShowModal={() => goto(`/login/${login.uuid}`)} />
 	</span>

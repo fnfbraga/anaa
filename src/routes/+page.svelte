@@ -20,23 +20,27 @@
 
 	$: notes = $sourceFile?.filter((item) => item?.type === ItemType.note) as Array<Note>;
 	$: visibleNotes = $searchState
-		? notes.filter(
-				(note) =>
-					note.name?.includes($searchState as string) ||
-					note.note?.includes($searchState as string) ||
-					note.tags?.some((tag) => tag.includes($searchState as string))
-		  )
-		: notes;
+		? notes
+				.filter(
+					(note) =>
+						note.name?.includes($searchState as string) ||
+						note.note?.includes($searchState as string) ||
+						note.tags?.some((tag) => tag.includes($searchState as string))
+				)
+				.sort((a, b) => ((a?.name || 0) > (b?.name || 0) ? 1 : -1))
+		: notes.sort((a, b) => ((a?.name || 0) > (b?.name || 0) ? 1 : -1));
 	$: logins = $sourceFile?.filter((item) => item?.type === ItemType.login) as Array<Login>;
 	$: visibleLogins = $searchState
-		? logins.filter(
-				(login) =>
-					login.name?.includes($searchState as string) ||
-					login.url?.includes($searchState as string) ||
-					login.username?.includes($searchState as string) ||
-					login.tags?.some((tag) => tag.includes($searchState as string))
-		  )
-		: logins;
+		? logins
+				.filter(
+					(login) =>
+						login.name?.includes($searchState as string) ||
+						login.url?.includes($searchState as string) ||
+						login.username?.includes($searchState as string) ||
+						login.tags?.some((tag) => tag.includes($searchState as string))
+				)
+				.sort((a, b) => ((a?.name || 0) > (b?.name || 0) ? 1 : -1))
+		: logins.sort((a, b) => ((a?.name || 0) > (b?.name || 0) ? 1 : -1));
 
 	onMount(async () => {
 		if (!$sourceFileExists) {
