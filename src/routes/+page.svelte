@@ -23,9 +23,11 @@
 		? notes
 				.filter(
 					(note) =>
-						note.name?.includes($searchState as string) ||
-						note.note?.includes($searchState as string) ||
-						note.tags?.some((tag) => tag.includes($searchState as string))
+						note.name?.toLowerCase().includes($searchState?.toLowerCase() as string) ||
+						note.note?.toLowerCase().includes($searchState?.toLowerCase() as string) ||
+						note.tags?.some((tag) =>
+							tag?.toLowerCase().includes($searchState?.toLowerCase() as string)
+						)
 				)
 				.sort((a, b) => ((a?.name || 0) > (b?.name || 0) ? 1 : -1))
 		: notes.sort((a, b) => ((a?.name || 0) > (b?.name || 0) ? 1 : -1));
@@ -34,10 +36,12 @@
 		? logins
 				.filter(
 					(login) =>
-						login.name?.includes($searchState as string) ||
-						login.url?.includes($searchState as string) ||
-						login.username?.includes($searchState as string) ||
-						login.tags?.some((tag) => tag.includes($searchState as string))
+						login.name?.toLowerCase().includes($searchState?.toLowerCase() as string) ||
+						login.url?.toLowerCase().includes($searchState?.toLowerCase() as string) ||
+						login.username?.toLowerCase().includes($searchState?.toLowerCase() as string) ||
+						login.tags?.some((tag) =>
+							tag?.toLowerCase().includes($searchState?.toLowerCase() as string)
+						)
 				)
 				.sort((a, b) => ((a?.name || 0) > (b?.name || 0) ? 1 : -1))
 		: logins.sort((a, b) => ((a?.name || 0) > (b?.name || 0) ? 1 : -1));
