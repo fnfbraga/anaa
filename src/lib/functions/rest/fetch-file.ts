@@ -25,6 +25,6 @@ export default async () => {
 		})
 		.catch((e) => {
 			loadingState.set(false);
-			throw error(500, e);
+			error(500, e);
 		});
 };

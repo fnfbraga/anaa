@@ -25,10 +25,10 @@ export const GET = (async ({ locals }) => {
 			})
 		);
 	} catch (e: any) {
-		throw error(
-			500,
-			typeof e?.message === 'string' ? JSON.parse(e?.message) : JSON.stringify(e?.message || e)
-		);
+		error(
+        			500,
+        			typeof e?.message === 'string' ? JSON.parse(e?.message) : JSON.stringify(e?.message || e)
+        		);
 	}
 }) satisfies RequestHandler;
 
@@ -46,10 +46,10 @@ export const POST = (async ({ locals, request }) => {
 		await updateSourceFile(file?.id || '', requestData);
 		return new Response(JSON.stringify('ok'));
 	} catch (e: any) {
-		throw error(
-			500,
-			typeof e?.message === 'string' ? JSON.parse(e?.message) : JSON.stringify(e?.message || e)
-		);
+		error(
+        			500,
+        			typeof e?.message === 'string' ? JSON.parse(e?.message) : JSON.stringify(e?.message || e)
+        		);
 	}
 }) satisfies RequestHandler;
 
@@ -67,10 +67,10 @@ export const DELETE = (async ({ locals, request }) => {
 		await deleteRecordFromFile(file.id, requestData);
 		return new Response(JSON.stringify('ok'));
 	} catch (e: any) {
-		throw error(
-			500,
-			typeof e?.message === 'string' ? JSON.parse(e?.message) : JSON.stringify(e?.message || e)
-		);
+		error(
+        			500,
+        			typeof e?.message === 'string' ? JSON.parse(e?.message) : JSON.stringify(e?.message || e)
+        		);
 	}
 }) satisfies RequestHandler;
 
@@ -91,9 +91,9 @@ export const PUT = (async ({ locals, request }) => {
 		await updateOrAddRecordFromFile(file.id, requestData);
 		return new Response(JSON.stringify('ok'));
 	} catch (e: any) {
-		throw error(
-			500,
-			typeof e?.message === 'string' ? JSON.parse(e?.message) : JSON.stringify(e?.message || e)
-		);
+		error(
+        			500,
+        			typeof e?.message === 'string' ? JSON.parse(e?.message) : JSON.stringify(e?.message || e)
+        		);
 	}
 }) satisfies RequestHandler;

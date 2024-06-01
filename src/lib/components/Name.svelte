@@ -10,6 +10,7 @@
 	let showTooltip = false;
 </script>
 
+<!-- svelte-ignore a11y_no_static_element_interactions -->
 <span
 	on:click={handleShowModal}
 	on:keypress={handleShowModal}
@@ -27,7 +28,7 @@
 			{#if edit}
 				<Input label="name" on:input inputValue={name} />
 			{:else}
-				<p class="text-xs">{name}</p>
+				<span class="text-xs">{name}</span>
 			{/if}
 		</p>
 	</span>

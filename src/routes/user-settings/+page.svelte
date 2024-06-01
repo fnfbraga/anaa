@@ -75,6 +75,7 @@
 				<li class="p-2">
 					<strong>STEP 1:</strong> create a folder in your google drive and share it with the
 					following email address:
+					<!-- svelte-ignore a11y_no_static_element_interactions -->
 					<u on:click={handleCopy} on:keypress={handleCopy} id={emailId} class="cursor-pointer"
 						>{clientEmail}</u
 					>
@@ -88,4 +89,5 @@
 			</ul>
 		</form>
 	{/if}
+	<p class="p-2 ml-10">version: 1.1</p>
 </Modal>

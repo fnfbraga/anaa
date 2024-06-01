@@ -12,6 +12,7 @@
 	let showTooltip = false;
 </script>
 
+<!-- svelte-ignore a11y_no_static_element_interactions -->
 <span
 	on:mouseover={() => (showTooltip = true)}
 	on:focus={() => (showTooltip = true)}
@@ -25,11 +26,11 @@
 	<span class="flex items-center h-6">
 		<p class="truncate w-3/4" use:usernameRef>
 			{#if edit}
-				<div class="mt-16">
+				<span class="mt-16">
 					<Input label="username" on:input inputValue={username} />
-				</div>
+				</span>
 			{:else}
-				<p class="text-xs">{username}</p>
+				<span class="text-xs">{username}</span>
 			{/if}
 		</p>
 		<span class={edit ? 'mt-16' : ''}>

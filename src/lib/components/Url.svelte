@@ -12,6 +12,7 @@
 	let showTooltip = false;
 </script>
 
+<!-- svelte-ignore a11y_no_static_element_interactions -->
 <span
 	on:mouseover={() => (showTooltip = true)}
 	on:focus={() => (showTooltip = true)}
@@ -25,11 +26,11 @@
 	<span class="flex items-center h-6">
 		<p class="truncate w-3/4" use:urlRef>
 			{#if edit}
-				<div class="mt-8">
+				<span class="mt-8">
 					<Input on:input inputValue={url} label="url" inputType="url" />
-				</div>
+				</span>
 			{:else}
-				<p class="text-xs">{url}</p>
+				<span class="text-xs">{url}</span>
 			{/if}
 		</p>
 		<span class={edit ? 'mt-8' : ''}>

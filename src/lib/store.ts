@@ -10,5 +10,5 @@ export const alerts = writable<
 >([]);
 export const loadingState = writable(false);
 export const searchState = writable<string | undefined>(undefined);
-export const filterState = writable<'notes' | 'logins' | undefined>(undefined);
+export const filterState = writable<'notes' | 'logins'>('logins');
 export const notFoundState = writable(false);
