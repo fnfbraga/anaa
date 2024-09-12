@@ -12,6 +12,8 @@
 	import type { PageData } from './$types';
 	import { alerts } from '$lib/store';
 	import { AlertEnum } from '$lib/models/misc';
+	import CopyIcon from '$lib/components/CopyIcon.svelte';
+	import { handleCopytoClipBoard } from '$lib/functions/copy-to-clipboard';
 
 	export let data: PageData;
 
@@ -164,16 +166,30 @@
 				aria-label="Url"
 				inputType="url"
 			/>
-			<Input
-				id="username"
-				disabled={!edit}
-				value={values.username}
-				bind:inputValue={values.username}
-				name="username"
-				label="username"
-				aria-label="Username"
-				containerClasses={!edit ? 'pb-2' : ''}
-			/>
+			<div class="flex justify-between w-5/6">
+				<Input
+					id="username"
+					disabled={!edit}
+					value={values.username}
+					bind:inputValue={values.username}
+					name="username"
+					label="username"
+					aria-label="Username"
+					containerClasses={!edit ? 'pb-2' : ''}
+				/>
+
+				<span class="mr-20">
+					<CopyIcon
+						on:keypress={() => alert('copy')}
+						on:click={() => {
+							handleCopytoClipBoard({
+								message: `username copied to clipboard`,
+								content: values.username
+							});
+						}}
+					/>
+				</span>
+			</div>
 			<Password {edit} disabled={!edit} bind:password={values.password} isModal={true} />
 			<TagInput disabled={!edit} bind:tags={values.tags} />
 			{#if edit}

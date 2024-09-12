@@ -45,7 +45,7 @@
 		</div>
 	</span>
 	{#if password}
-		<span class={isEdit ? 'flex' : 'flex'}>
+		<span class="flex">
 			<ShowIcon
 				{masked}
 				on:click={() => (masked = !masked)}
