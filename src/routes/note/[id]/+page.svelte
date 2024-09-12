@@ -4,39 +4,37 @@
 	import Input from '$lib/components/Input.svelte';
 	import { z } from 'zod';
 	import TagInput from '$lib/components/TagInput.svelte';
-	import { ItemType } from '$lib/models/misc';
-	import { loadingState, sourceFile, sourceFileExists } from '$lib/store';
-	import { v4 as uuidv4 } from 'uuid';
-	import type { PageData } from './$types';
-	import { onMount } from 'svelte';
-	import { goto } from '$app/navigation';
+	import Password from '$lib/components/Password.svelte';
 	import Loading from '$lib/components/Loading.svelte';
-	import deleteItem from '$lib/functions/rest/delete-item';
-	import putItem from '$lib/functions/rest/put-item';
-	import type { Note } from '$lib/models/notes';
+	import { goto } from '$app/navigation';
+	import { type Item } from '$lib/schema';
+	import { page } from '$app/stores';
+	import type { PageData } from './$types';
+	import { alerts } from '$lib/store';
+	import { AlertEnum } from '$lib/models/misc';
 
 	export let data: PageData;
-	let edit = !data.uuid;
+
+	$: id = $page.params.id;
+	$: edit = id === 'new';
 	let setDelete = false;
+	let loadingState = false;
 
 	const Note = z.object({
-		uuid: z.string(),
-		type: z.number(),
 		name: z.string().min(1),
-		note: z.string().optional(),
-		tags: z.array(z.string()).optional()
+		note: z.string().min(1),
+		tags: z.array(z.string()).optional(),
+		favorite: z.string().optional()
 	});
-	type NoteType = z.infer<typeof Note>;
 	type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
-	type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 
 	$: values = {
-		uuid: '',
-		type: ItemType.note,
-		name: undefined,
-		note: undefined,
-		tags: []
-	} as PartialBy<NoteType, 'name'>;
+		name: data.name,
+		tags: data.tags,
+		favorite: data.favorite,
+		note: data.note
+	} as Omit<Omit<Omit<Item, 'username'>, 'id'>, 'type'>;
+
 	$: errors = () => {
 		let error: Array<any> = [];
 		try {
@@ -48,56 +46,76 @@
 			return error;
 		}
 	};
+
+	$: console.info(errors());
+
 	const handleSubmit = async () => {
-		if (!data.uuid) {
-			const newNote = { ...values, uuid: uuidv4() };
-			values = newNote;
-			sourceFile.update((items) => [...items, newNote] as Array<Note>);
-		} else {
-			sourceFile.update(
-				(values) =>
-					values.map((value) => {
-						if (value?.uuid === (values as any).uuid) return values;
-						return value;
-					}) as any
-			);
+		try {
+			if (id === 'new') {
+				const form = new FormData();
+				form.append('data', JSON.stringify(values));
+				await fetch(`?/add`, { method: 'POST', body: form });
+			} else {
+				const form = new FormData();
+				form.append('data', JSON.stringify({ ...values, id }));
+				await fetch(`?/edit`, { method: 'POST', body: form });
+			}
+			alerts.update((alerts) => [
+				...alerts,
+				{
+					type: AlertEnum.info,
+					message:
+						id === 'new' ? `note created successfully` : `note ${values.name} updated successfully`,
+					createdOn: new Date().getTime()
+				}
+			]);
+			await goto('/');
+		} catch (err) {
+			alerts.update((alerts) => [
+				...alerts,
+				{
+					type: AlertEnum.error,
+					message: `Something went wrong creating/updating note `,
+					createdOn: new Date().getTime()
+				}
+			]);
 		}
-		await putItem(values);
-		goto('/');
-		edit = false;
 	};
+
 	const handleDelete = async () => {
-		if (!data.uuid || !values.uuid) return;
-		sourceFile.update((items) => items.filter((item) => item?.uuid !== values.uuid));
-		await deleteItem(values.uuid);
-		setDelete = false;
-		goto('/');
-	};
-	onMount(async () => {
-		if (data.uuid) {
-			if (!$sourceFileExists) {
-				const FetchFile = await import('$lib/functions/rest/fetch-file');
-				await FetchFile.default();
-			}
-			const uuid = $sourceFile.find((item) => item?.uuid == data.uuid);
-			if (uuid) {
-				values = uuid;
-				return;
-			}
-			console.error(`could not find uuid: ${data.uuid}`);
-			return;
+		try {
+			const form = new FormData();
+			form.append('id', id);
+			await fetch(`?/delete`, { method: 'POST', body: form });
+			alerts.update((alerts) => [
+				...alerts,
+				{
+					type: AlertEnum.info,
+					message: `note ${values.name} deleted successfully`,
+					createdOn: new Date().getTime()
+				}
+			]);
+			await goto('/');
+		} catch (err) {
+			alerts.update((alerts) => [
+				...alerts,
+				{
+					type: AlertEnum.error,
+					message: `Something went wrong deleting note ${id}`,
+					createdOn: new Date().getTime()
+				}
+			]);
 		}
-		return () => {};
-	});
+	};
 </script>
 
 <Modal closeRoute="/">
-	{#if $loadingState}
+	{#if loadingState}
 		<Loading />
 	{/if}
 	<form autocomplete="off">
 		<div class="p-4 ">
-			{#if data.uuid}
+			{#if id}
 				{#if !edit && !setDelete}
 					<Button on:click={() => (edit = true)} color="hover:border-b-sky-500" text="EDIT" />
 					<Button
@@ -120,15 +138,15 @@
 		</div>
 		<div id="input-container" class="pl-4 pr-4 space-y-4">
 			<Input
+				id="name"
+				disabled={!edit}
 				value={values.name}
 				bind:inputValue={values.name}
 				type="text"
 				name="name"
-				id="name"
 				label="name"
 				aria-label="Name"
 				required
-				disabled={!edit}
 			/>
 			<Input
 				id="note"
@@ -145,7 +163,7 @@
 			{#if edit}
 				<div class="flex justify-center pt-10">
 					<Button
-						id="submit-login"
+						id="submit-note"
 						disabled={errors().length > 0}
 						color="hover:border-b-sky-500"
 						text="SAVE"

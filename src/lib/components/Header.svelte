@@ -1,28 +1,58 @@
 <script lang="ts">
-	import { filterState, searchState } from '$lib/store';
 	import HeaderButton from './HeaderButton.svelte';
 	import NavUserActions from './NavUserActions.svelte';
-	let selected: 'logins' | 'notes' | undefined = undefined;
+	import { goto } from '$app/navigation';
+	import { page } from '$app/stores';
+	import { onMount } from 'svelte';
 
-	const handleSelect = (value: 'logins' | 'notes') => {
-		selected === value ? (selected = undefined) : (selected = value);
-		filterState.set(selected);
-	};
+	let selected: 'login' | 'note' | null = $page.url.searchParams.get('type') as any;
+	let searchValue = $page.url.searchParams.get('search') || '';
+	let inputElement: any;
 
-	const onSearchInput = (event: Event) => {
-		event.preventDefault();
-		searchState.set((event.target as any)?.value);
-	};
+	async function handleSelect(value: 'login' | 'note') {
+		const url = $page.url.searchParams;
+		if (value !== selected) {
+			url.set('type', value);
+		} else {
+			url.delete('type');
+		}
+		await goto(`?${url}`, { replaceState: true });
+	}
+
+	async function onSearchInput(event: any) {
+		const url = $page.url.searchParams;
+		if (!event.target.value) {
+			url.delete('search');
+			goto(`?${url}`, {
+				keepFocus: true
+			});
+			return;
+		}
+		url.set('search', event.target.value);
+		async function navigate() {
+			let time: any;
+			clearTimeout(time);
+			time = setTimeout(async () => {
+				await goto(`?${url}`, {
+					keepFocus: true
+				});
+			}, 400);
+		}
+		await navigate();
+	}
+	onMount(() => {
+		inputElement.focus();
+	});
 </script>
 
 <nav
 	class="sticky top-0  shadow bg-white border-gray-400 px-2 sm:px-4 py-2.5 rounded flex justify-between w-full"
 >
 	<span class="flex align-middle justify-between space-x-3">
-		<HeaderButton selected={selected === 'logins'} on:click={() => handleSelect('logins')}
+		<HeaderButton selected={selected === 'login'} on:click={() => handleSelect('login')}
 			>logins</HeaderButton
 		>
-		<HeaderButton selected={selected === 'notes'} on:click={() => handleSelect('notes')}
+		<HeaderButton selected={selected === 'note'} on:click={() => handleSelect('note')}
 			>notes</HeaderButton
 		>
 	</span>
@@ -43,9 +73,11 @@
 		<input
 			type="search"
 			name="search"
-			class="w-11/12 py-2 text-white bg-gray-100 rounded-md pl-10 focus:outline-none text-gray-900"
+			class="w-11/12 py-2 bg-gray-100 rounded-md pl-10 focus:outline-none text-gray-900"
 			placeholder="Search..."
 			autocomplete="off"
+			bind:this={inputElement}
+			bind:value={searchValue}
 			on:input={onSearchInput}
 		/>
 	</div>

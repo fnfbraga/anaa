@@ -1,5 +1,5 @@
 <script lang="ts">
-	export let inputValue: string | number | undefined = undefined;
+	export let inputValue: string | number | undefined | null = undefined;
 	export let inputType: 'input' | 'textarea' | 'url' | 'password' = 'input';
 	export let containerClasses = '';
 </script>

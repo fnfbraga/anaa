@@ -8,7 +8,7 @@ export const handleCopytoClipBoard = ({
 }: {
 	elementId?: string;
 	message?: string;
-	content?: string;
+	content?: string | null | undefined;
 }) => {
 	const text = elementId ? document.getElementById(elementId)?.innerText : content;
 	if (!text && !content) return;

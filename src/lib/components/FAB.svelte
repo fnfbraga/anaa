@@ -10,7 +10,7 @@
 		<li class="mb-8 cursor-pointer">
 			<HeaderButton
 				on:click={() => {
-					goto('/login');
+					goto('/login/new');
 					open = false;
 				}}>login</HeaderButton
 			>
@@ -18,7 +18,7 @@
 		<li>
 			<HeaderButton
 				on:click={() => {
-					goto('/note');
+					goto('/note/new');
 					open = false;
 				}}>note</HeaderButton
 			>

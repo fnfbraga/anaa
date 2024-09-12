@@ -1,9 +1,9 @@
-import type { ItemType } from './misc';
+import type { TypesEnum } from '$lib/schema';
 
 export interface Note {
-	uuid: string;
+	id: string;
 	name?: string;
-	note?: string;
-	tags?: Array<string>;
-	type: ItemType.note;
+	note?: string | null;
+	tags?: Array<string | null> | null;
+	type: TypesEnum.note;
 }

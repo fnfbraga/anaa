@@ -1,18 +1,18 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import type { Login } from '$lib/models/logins';
+	import type { Item } from '$lib/schema';
 	import Name from './Name.svelte';
 	import Password from './Password.svelte';
 	import Tags from './Tags.svelte';
 	import Url from './Url.svelte';
 	import Username from './Username.svelte';
 
-	export let login: Login;
+	export let login: Item;
 </script>
 
 <div class="flex m-1 space-x-4 w-full rounded shadow p-1 pl-8 hover:shadow-md">
 	<span class="w-1/6 lg:w-2/12 p-2 cursor-pointer">
-		<Name name={login.name} handleShowModal={() => goto(`/login/${login.uuid}`)} />
+		<Name name={login.name} handleShowModal={() => goto(`/login/${login.id}`)} />
 	</span>
 	<span class="w-1/6 lg:w-2/12 p-2 font-mono hidden lg:block">
 		<Url url={login.url || ''} />

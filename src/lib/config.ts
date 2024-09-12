@@ -7,7 +7,11 @@ import {
 	SERVICE_ACCOUNT_CLIENT_ID,
 	SERVICE_ACCOUNT_PRIVATE_KEY,
 	SERVICE_ACCOUNT_PRIVATE_KEY_ID,
-	SERVICE_ACCOUNT_PROJECT_ID
+	SERVICE_ACCOUNT_PROJECT_ID,
+	DB_HOST,
+	DB_USER,
+	DB_PASSWORD,
+	DB_NAME
 } from '$env/static/private';
 
 export const googleClientId = GOOGE_CLIENT_ID || '';
@@ -25,3 +29,7 @@ export const serviceAccountCredentials = {
 	client_x509_cert_url: SERVICE_ACCOUNT_CLIENT_CERT_URL
 };
 export const allowedUsers: Array<string | undefined> = JSON.parse(ALLOWED_USERS) || [];
+export const dbHost = DB_HOST || '';
+export const dbUser = DB_USER || '';
+export const dbPassword = DB_PASSWORD || '';
+export const dbName = DB_NAME || '';

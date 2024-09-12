@@ -1,13 +1,14 @@
 <script lang="ts">
 	import Tag from '$lib/components/Tag.svelte';
 
-	export let tags: Array<string | null> = [];
+	export let tags = [] as any;
 	export let disabled = false;
 	let tagInput: string | undefined;
 
 	const handleChange = (e: KeyboardEvent) => {
 		if (!tagInput && e.code === 'Backspace') {
-			tags = tags?.length === 1 ? [] : tags?.filter((_, i) => i < (tags?.length || 0) - 1);
+			tags =
+				tags?.length === 1 ? [] : tags?.filter((_: any, i: number) => i < (tags?.length || 0) - 1);
 		}
 		if (tagInput && tagInput.trim().length > 0 && e.code === 'Enter') {
 			e.preventDefault();
@@ -18,10 +19,11 @@
 
 	const removeTag = (e: any, index: number) =>
 		(e.pointerType === 'mouse' || e.pointerType === 'touch') &&
-		(tags = tags?.filter((_, i) => index !== i));
+		(tags = tags?.filter((_: any, i: number) => index !== i));
 </script>
 
 <p class="ml-2 text-xs text-gray-500">tags</p>
+<!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
 	class="flex items-center p-1 rounded-md {!disabled
 		? 'border-2'

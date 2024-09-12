@@ -1,5 +1,5 @@
 <script lang="ts">
-	export let tag: string | undefined;
+	export let tag: string | undefined | null;
 	export let edit = false;
 </script>
 

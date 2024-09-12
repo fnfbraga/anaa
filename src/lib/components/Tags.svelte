@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Tag from './Tag.svelte';
-	export let tags: Array<string> | undefined;
+	export let tags: Array<string | null> | undefined | null;
 </script>
 
 {#if tags}

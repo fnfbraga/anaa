@@ -5,42 +5,40 @@
 	import { z } from 'zod';
 	import TagInput from '$lib/components/TagInput.svelte';
 	import Password from '$lib/components/Password.svelte';
-	import { ItemType } from '$lib/models/misc';
-	import { loadingState, sourceFile, sourceFileExists } from '$lib/store';
-	import { v4 as uuidv4 } from 'uuid';
-	import type { PageData } from './$types';
-	import { onMount } from 'svelte';
 	import Loading from '$lib/components/Loading.svelte';
 	import { goto } from '$app/navigation';
-	import deleteItem from '$lib/functions/rest/delete-item';
-	import putItem from '$lib/functions/rest/put-item';
+	import { type Item } from '$lib/schema';
+	import { page } from '$app/stores';
+	import type { PageData } from './$types';
+	import { alerts } from '$lib/store';
+	import { AlertEnum } from '$lib/models/misc';
 
 	export let data: PageData;
-	let edit = !data.uuid;
+
+	$: id = $page.params.id;
+	$: edit = id === 'new';
 	let setDelete = false;
+	let loadingState = false;
 
 	const Login = z.object({
-		uuid: z.string(),
 		name: z.string().min(1),
-		type: z.number(),
 		url: z.string().optional(),
-		username: z.string().optional(),
-		password: z.string().optional(),
-		tags: z.array(z.string()).optional()
+		username: z.string(),
+		password: z.string(),
+		tags: z.array(z.string()).optional(),
+		favorite: z.string().optional()
 	});
-	type LoginType = z.infer<typeof Login>;
 	type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
-	type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 
 	$: values = {
-		uuid: '',
-		type: ItemType.login,
-		name: undefined,
-		url: undefined,
-		username: undefined,
-		password: undefined,
-		tags: []
-	} as PartialBy<LoginType, 'name'>;
+		name: data.name,
+		url: data.url || '',
+		username: data.username,
+		password: data.password,
+		tags: data.tags,
+		favorite: data.favorite
+	} as Omit<Omit<Omit<Item, 'note'>, 'id'>, 'type'>;
+
 	$: errors = () => {
 		let error: Array<any> = [];
 		try {
@@ -53,57 +51,77 @@
 		}
 	};
 
+	$: console.info(errors());
+
 	const handleSubmit = async () => {
-		if (!data.uuid) {
-			const newLogin = { ...values, uuid: uuidv4() };
-			values = newLogin;
-			sourceFile.update((items) => [...items, newLogin] as Array<LoginType>);
-		} else {
-			sourceFile.update(
-				(values) =>
-					values.map((value) => {
-						if (value?.uuid === (values as any).uuid) return values;
-						return value;
-					}) as any
-			);
+		try {
+			if (id === 'new') {
+				const form = new FormData();
+				form.append('data', JSON.stringify(values));
+				await fetch(`?/add`, { method: 'POST', body: form });
+			} else {
+				const form = new FormData();
+				form.append('data', JSON.stringify({ ...values, id }));
+				await fetch(`?/edit`, { method: 'POST', body: form });
+			}
+			alerts.update((alerts) => [
+				...alerts,
+				{
+					type: AlertEnum.info,
+					message:
+						id === 'new'
+							? `login created successfully`
+							: `login ${values.name} updated successfully`,
+					createdOn: new Date().getTime()
+				}
+			]);
+			await goto('/');
+		} catch (err) {
+			alerts.update((alerts) => [
+				...alerts,
+				{
+					type: AlertEnum.error,
+					message: `Something went wrong creating/updating login `,
+					createdOn: new Date().getTime()
+				}
+			]);
 		}
-		await putItem(values);
-		goto('/');
-		edit = false;
 	};
 
 	const handleDelete = async () => {
-		if (!data.uuid || !values.uuid) return;
-		sourceFile.update((items) => items.filter((item) => item?.uuid !== values.uuid));
-		await deleteItem(values.uuid);
-		setDelete = false;
-		goto('/');
+		try {
+			const form = new FormData();
+			form.append('id', id);
+			await fetch(`?/delete`, { method: 'POST', body: form });
+			alerts.update((alerts) => [
+				...alerts,
+				{
+					type: AlertEnum.info,
+					message: `login ${values.name} deleted successfully`,
+					createdOn: new Date().getTime()
+				}
+			]);
+			await goto('/');
+		} catch (err) {
+			alerts.update((alerts) => [
+				...alerts,
+				{
+					type: AlertEnum.error,
+					message: `Something went wrong deleting login ${id}`,
+					createdOn: new Date().getTime()
+				}
+			]);
+		}
 	};
-
-	onMount(async () => {
-		if (!$sourceFileExists) {
-			const FetchFile = await import('$lib/functions/rest/fetch-file');
-			await FetchFile.default();
-		}
-		if (data.uuid) {
-			const uuid = $sourceFile.find((item) => item?.uuid == data.uuid);
-			if (uuid) {
-				values = uuid;
-				return;
-			}
-			console.error(`could not find uuid: ${data.uuid}`);
-			return;
-		}
-	});
 </script>
 
 <Modal closeRoute="/">
-	{#if $loadingState}
+	{#if loadingState}
 		<Loading />
 	{/if}
 	<form autocomplete="off">
 		<div class="p-4 ">
-			{#if data.uuid}
+			{#if id}
 				{#if !edit && !setDelete}
 					<Button on:click={() => (edit = true)} color="hover:border-b-sky-500" text="EDIT" />
 					<Button

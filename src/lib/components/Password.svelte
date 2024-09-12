@@ -8,7 +8,7 @@
 
 	const [passwordRef, popperPasswordContent] = createPopperActions(popperOptions);
 	export let isModal = true;
-	export let password: string | undefined;
+	export let password: string | undefined | null;
 	export let edit = false;
 	export let disabled: boolean;
 	$: isEdit = edit;
@@ -19,6 +19,7 @@
 </script>
 
 <span class="flex items-center">
+	<!-- svelte-ignore a11y_no_static_element_interactions -->
 	<span
 		class="truncate font-mono ${classes} w-3/4"
 		on:mouseover={() => (showTooltip = true)}
@@ -43,7 +44,7 @@
 			/>
 		</div>
 	</span>
-	{#if password?.length}
+	{#if password}
 		<span class={isEdit ? 'flex' : 'flex'}>
 			<ShowIcon
 				{masked}
