@@ -36,7 +36,7 @@
 				await goto(`?${url}`, {
 					keepFocus: true
 				});
-			}, 400);
+			}, 1000);
 		}
 		await navigate();
 	}
