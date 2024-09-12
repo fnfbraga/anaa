@@ -36,9 +36,9 @@
 				await goto(`?${url}`, {
 					keepFocus: true
 				});
-			}, 1000);
+			}, 300);
 		}
-		await navigate();
+		setTimeout(async () => await navigate(), 1000);
 	}
 	onMount(() => {
 		inputElement.focus();
