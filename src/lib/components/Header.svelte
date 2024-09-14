@@ -10,21 +10,22 @@
 	let inputElement: any;
 
 	async function handleSelect(value: 'login' | 'note') {
-		const url = $page.url.searchParams;
+		let url = $page.url.searchParams;
 		if (value !== selected) {
 			url.set('type', value);
 		} else {
 			url.delete('type');
 		}
-		await goto(`?${url}`, { replaceState: true });
+		await goto(`?${url}`, { replaceState: true, invalidateAll: true });
 	}
 
 	async function onSearchInput(event: any) {
-		const url = $page.url.searchParams;
+		let url = $page.url.searchParams;
 		if (!event.target.value) {
 			url.delete('search');
 			goto(`?${url}`, {
-				keepFocus: true
+				keepFocus: true,
+				invalidateAll: true
 			});
 			return;
 		}
@@ -34,7 +35,8 @@
 			clearTimeout(time);
 			time = setTimeout(async () => {
 				await goto(`?${url}`, {
-					keepFocus: true
+					keepFocus: true,
+					invalidateAll: true
 				});
 			}, 300);
 		}
