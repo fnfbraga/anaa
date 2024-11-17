@@ -8,6 +8,7 @@
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { browser } from '$app/environment';
+	import Header from '$lib/components/Header.svelte';
 
 	onMount(() => {
 		if (!$page.data.session?.user) {
@@ -19,6 +20,7 @@
 </script>
 
 <main class="mb-auto h-10 w-screen">
+	<Header />
 	{#if $navigating}
 		<Loading />
 	{:else}
