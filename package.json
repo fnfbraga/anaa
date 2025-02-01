@@ -2,7 +2,7 @@
 	"name": "anaa",
 	"version": "0.0.1",
 	"engines": {
-		"node": "22.x"
+		"node": "20.x"
 	},
 	"scripts": {
 		"dev": "vite dev",
@@ -21,9 +21,9 @@
 		"@google-cloud/local-auth": "2.1.0",
 		"@neoconfetti/svelte": "^1.0.0",
 		"@popperjs/core": "^2.11.6",
-		"@sveltejs/adapter-auto": "^3.0.0",
+		"@sveltejs/adapter-auto": "^3.2.1",
 		"@sveltejs/adapter-vercel": "^4.0.5",
-		"@sveltejs/kit": "^2.0.0",
+		"@sveltejs/kit": "^2.5.10",
 		"@sveltejs/vite-plugin-svelte": "^3.0.0",
 		"@types/bcrypt": "^5.0.2",
 		"@types/cookie": "^0.5.1",
