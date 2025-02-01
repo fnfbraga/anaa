@@ -27,7 +27,7 @@ devDependencies:
     specifier: ^3.0.0
     version: 3.2.1(@sveltejs/kit@2.5.10)
   '@sveltejs/adapter-vercel':
-    specifier: ^4.0.0
+    specifier: ^4.0.5
     version: 4.0.5(@sveltejs/kit@2.5.10)
   '@sveltejs/kit':
     specifier: ^2.0.0
