@@ -2,7 +2,7 @@
 	"name": "anaa",
 	"version": "0.0.1",
 	"engines": {
-		"node": "20.x"
+		"node": "22.x"
 	},
 	"scripts": {
 		"dev": "vite dev",
