@@ -20,7 +20,7 @@ export const serviceAccountCredentials = {
 	type: 'service_account',
 	project_id: SERVICE_ACCOUNT_PROJECT_ID,
 	private_key_id: SERVICE_ACCOUNT_PRIVATE_KEY_ID,
-	private_key: Buffer.from(SERVICE_ACCOUNT_PRIVATE_KEY, 'base64').toString('ascii'),
+	private_key: Buffer.from(SERVICE_ACCOUNT_PRIVATE_KEY || '', 'base64').toString('ascii'),
 	client_email: SERVICE_ACCOUNT_CLIENT_EMAIL,
 	client_id: SERVICE_ACCOUNT_CLIENT_ID,
 	auth_uri: 'https://accounts.google.com/o/oauth2/auth',
@@ -28,7 +28,7 @@ export const serviceAccountCredentials = {
 	auth_provider_x509_cert_url: 'https://www.googleapis.com/oauth2/v1/certs',
 	client_x509_cert_url: SERVICE_ACCOUNT_CLIENT_CERT_URL
 };
-export const allowedUsers: Array<string | undefined> = JSON.parse(ALLOWED_USERS) || [];
+export const allowedUsers: Array<string | undefined> = JSON.parse(ALLOWED_USERS || '[]') || [];
 export const dbHost = DB_HOST || '';
 export const dbUser = DB_USER || '';
 export const dbPassword = DB_PASSWORD || '';

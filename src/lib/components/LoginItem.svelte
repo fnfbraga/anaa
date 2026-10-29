@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
 	import type { Item } from '$lib/schema';
 	import Name from './Name.svelte';
 	import Password from './Password.svelte';
@@ -12,7 +11,7 @@
 
 <div class="flex m-1 space-x-4 w-full rounded shadow p-1 pl-8 hover:shadow-md">
 	<span class="w-1/6 lg:w-2/12 p-2 cursor-pointer">
-		<Name name={login.name} handleShowModal={() => goto(`/login/${login.id}`)} />
+		<Name name={login.name} href={`/login/${login.id}`} />
 	</span>
 	<span class="w-1/6 lg:w-2/12 p-2 font-mono hidden lg:block">
 		<Url url={login.url || ''} />

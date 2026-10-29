@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import { createPopperActions } from 'svelte-popperjs';
 	import HeaderButton from './HeaderButton.svelte';
@@ -15,12 +14,13 @@
 	let isOpen = false;
 	$: userInitials = (userData?.name || '')
 		.split(' ')
-		.map((v) => v[0])
+		.map((v: string) => v[0])
 		.toString()
 		.replace(',', '');
 </script>
 
 <button
+	type="button"
 	use:popperRef
 	class="w-10 h-10 rounded-full {!userData?.image && 'bg-slate-400'} hover:shadow-lg"
 	on:click={() => (isOpen = !isOpen)}
@@ -36,8 +36,8 @@
 		<ul>
 			<li>
 				<HeaderButton
+					href="/user-settings"
 					on:click={() => {
-						goto('/user-settings');
 						isOpen = false;
 					}}>User Settings</HeaderButton
 				>

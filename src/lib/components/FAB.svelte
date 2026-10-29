@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
 	import HeaderButton from './HeaderButton.svelte';
 
 	let open = false;
@@ -9,16 +8,16 @@
 	<ul class="fixed z-90 bottom-32 right-16 bg-slate-100 p-8 rounded-lg">
 		<li class="mb-8 cursor-pointer">
 			<HeaderButton
+				href="/login/new"
 				on:click={() => {
-					goto('/login/new');
 					open = false;
 				}}>login</HeaderButton
 			>
 		</li>
 		<li>
 			<HeaderButton
+				href="/note/new"
 				on:click={() => {
-					goto('/note/new');
 					open = false;
 				}}>note</HeaderButton
 			>

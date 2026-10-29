@@ -5,60 +5,70 @@
 	import { page } from '$app/stores';
 	import { onMount } from 'svelte';
 
-	let selected: 'login' | 'note' | null = $page.url.searchParams.get('type') as any;
+	$: selected = $page.url.searchParams.get('type') as 'login' | 'note' | null;
 	let searchValue = $page.url.searchParams.get('search') || '';
-	let inputElement: any;
+	let inputElement: HTMLInputElement;
+	let debounceTimer: ReturnType<typeof setTimeout>;
 
-	async function handleSelect(value: 'login' | 'note') {
-		let url = $page.url.searchParams;
-		if (value !== selected) {
-			url.set('type', value);
+	function buildFilterHref(value: 'login' | 'note', currentUrl: URL) {
+		const params = new URLSearchParams(currentUrl.searchParams);
+		if (params.get('type') === value) {
+			params.delete('type');
 		} else {
-			url.delete('type');
+			params.set('type', value);
 		}
-		await goto(`?${url}`, { replaceState: true, invalidateAll: true });
+		const query = params.toString();
+		return query ? `/?${query}` : '/';
 	}
 
-	async function onSearchInput(event: any) {
-		let url = $page.url.searchParams;
-		if (!event.target.value) {
-			url.delete('search');
-			goto(`?${url}`, {
+	$: loginHref = buildFilterHref('login', $page.url);
+	$: noteHref = buildFilterHref('note', $page.url);
+
+	function onSearchInput(event: Event) {
+		const target = event.target as HTMLInputElement;
+		clearTimeout(debounceTimer);
+
+		const params = new URLSearchParams($page.url.searchParams);
+		if (!target.value) {
+			params.delete('search');
+			const query = params.toString();
+			goto(query ? `/?${query}` : '/', {
 				keepFocus: true,
-				invalidateAll: true
+				replaceState: true
 			});
 			return;
 		}
-		url.set('search', event.target.value);
-		async function navigate() {
-			let time: any;
-			clearTimeout(time);
-			time = setTimeout(async () => {
-				await goto(`?${url}`, {
-					keepFocus: true,
-					invalidateAll: true
-				});
-			}, 300);
-		}
-		setTimeout(async () => await navigate(), 1000);
+
+		params.set('search', target.value);
+		const query = params.toString();
+		debounceTimer = setTimeout(() => {
+			goto(`/?${query}`, {
+				keepFocus: true,
+				replaceState: true
+			});
+		}, 300);
 	}
+
 	onMount(() => {
-		inputElement.focus();
+		inputElement?.focus();
 	});
 </script>
 
 <nav
-	class="sticky top-0  shadow bg-white border-gray-400 px-2 sm:px-4 py-2.5 rounded flex justify-between w-full"
+	class="sticky top-0 shadow bg-white border-gray-400 px-2 sm:px-4 py-2.5 rounded flex justify-between w-full"
 >
 	<span class="flex align-middle justify-between space-x-3">
-		<HeaderButton selected={selected === 'login'} on:click={() => handleSelect('login')}
-			>logins</HeaderButton
-		>
-		<HeaderButton selected={selected === 'note'} on:click={() => handleSelect('note')}
-			>notes</HeaderButton
-		>
+		<HeaderButton selected={selected === 'login'} href={loginHref}>logins</HeaderButton>
+		<HeaderButton selected={selected === 'note'} href={noteHref}>notes</HeaderButton>
 	</span>
-	<div class="relative text-gray-600 focus-within:text-gray-400 ml-2 w-6/12">
+	<form
+		method="GET"
+		action="/"
+		class="relative text-gray-600 focus-within:text-gray-400 ml-2 w-6/12"
+	>
+		{#if selected}
+			<input type="hidden" name="type" value={selected} />
+		{/if}
 		<span class="absolute inset-y-0 left-0 flex items-center pl-1">
 			<button type="submit" class="p-1 focus:outline-none focus:shadow-outline">
 				<svg
@@ -82,7 +92,7 @@
 			bind:value={searchValue}
 			on:input={onSearchInput}
 		/>
-	</div>
+	</form>
 	<NavUserActions />
 </nav>
 

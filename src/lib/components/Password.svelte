@@ -34,6 +34,7 @@
 		{:else}{/if}
 		<div class="truncate">
 			<Input
+				name="password"
 				label={isModal ? 'password' : ''}
 				inputType={masked ? 'password' : 'input'}
 				id="password-input"

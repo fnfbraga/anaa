@@ -5,7 +5,8 @@
 
 	const [nameRef, popperNameContent] = createPopperActions(popperOptions);
 	export let name: string | undefined;
-	export let handleShowModal: () => void;
+	export let href: string | undefined = undefined;
+	export let handleShowModal: (() => void) | undefined = undefined;
 	export let edit = false;
 	let showTooltip = false;
 </script>
@@ -27,6 +28,8 @@
 		<p class="truncate w-3/4" use:nameRef>
 			{#if edit}
 				<Input label="name" on:input inputValue={name} />
+			{:else if href}
+				<a {href} class="text-xs block w-full">{name}</a>
 			{:else}
 				<span class="text-xs">{name}</span>
 			{/if}

@@ -33,6 +33,7 @@
 	{#if tags}
 		{#each tags as tag, index}
 			{#if tag}
+				<input type="hidden" name="tags" value={tag} />
 				<Tag
 					{tag}
 					id={`tag: ${tag || ''}`}

@@ -1,23 +1,17 @@
 <script lang="ts">
 	import { signIn } from '@auth/sveltekit/client';
 	import GoogleLogo from '$lib/components/GoogleLogo.svelte';
-	import { goto } from '$app/navigation';
-	import { browser } from '$app/environment';
 
-	export let loading: boolean;
+	export let loading = false;
 
 	const handleSignIn = async () => {
 		loading = true;
-		await signIn('google', { redirect: false })
-			.then((v) => {
-				loading = false;
-			})
-			.catch((e) => console.error(e))
-			.finally(() => {
-				if (browser) {
-					goto('/');
-				}
-			});
+		try {
+			await signIn('google', { callbackUrl: '/' });
+		} catch (e) {
+			console.error(e);
+			loading = false;
+		}
 	};
 </script>
 
@@ -28,6 +22,7 @@
 		<p class="text-lg mt-3 bg-slate-800 rounded-lg px-2 py-1 text-white text-center w-20 ">ANAA</p>
 		<p class="text-xl">Login</p>
 		<button
+			type="button"
 			class="flex max-w-lg mt-10 rounded-lg border-2 p-2 bg-blue-600 text-emerald-50"
 			on:click={handleSignIn}
 		>

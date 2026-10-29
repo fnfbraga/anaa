@@ -1,9 +1,13 @@
+import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals }) => {
-	const userEmail = (await locals.getSession())?.user?.email;
+	const session = await locals.getSession();
+	if (!session?.user) {
+		throw redirect(303, '/sign-in');
+	}
 
 	return {
-		clientEmail: userEmail
+		clientEmail: session.user.email
 	};
 };

@@ -5,13 +5,13 @@
 
 {#if tag}
 	<span
-		{...$$props}
+		{...$$restProps}
 		class="flex items-center whitespace-nowrap bg-sky-400 rounded-full mr-1 p-1 px-2 {!edit &&
 			'mb-1'} "
 	>
 		<p class="text-xs pt-0.5">{tag}</p>
 		{#if edit}
-			<button on:click>
+			<button type="button" on:click>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
 					fill="none"

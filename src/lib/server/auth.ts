@@ -1,12 +1,12 @@
 import { SvelteKitAuth } from '@auth/sveltekit';
 import GoogleProvider from '@auth/core/providers/google';
-import { allowedUsers, googleClientId, googleClientSecret } from '$lib/config';
+import { allowedUsers, googleClientId, googleClientSecret } from '$lib/server/config';
 import { AUTH_SECRET } from '$env/static/private';
 import { error } from '@sveltejs/kit';
 
 export const svelteKitAuth = SvelteKitAuth({
 	trustHost: true,
-	debug: true,
+	debug: false,
 	secret: AUTH_SECRET,
 	providers: [
 		// @ts-expect-error -- ignore
