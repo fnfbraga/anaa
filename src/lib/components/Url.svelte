@@ -1,47 +1,40 @@
 <script lang="ts">
 	import { handleCopytoClipBoard } from '$lib/functions/copy-to-clipboard';
-	import { popperOptions } from '$lib/misc';
-	import { createPopperActions } from 'svelte-popperjs';
 	import CopyIcon from './CopyIcon.svelte';
 	import Input from './Input.svelte';
 
-	const [urlRef, popperUrlContent] = createPopperActions(popperOptions);
 	export let url: string | undefined;
 	export let edit = false;
 
-	let showTooltip = false;
+	$: normalizedHref = url
+		? url.startsWith('http://') || url.startsWith('https://')
+			? url
+			: `https://${url}`
+		: undefined;
 </script>
 
-<!-- svelte-ignore a11y_no_static_element_interactions -->
-<span
-	on:mouseover={() => (showTooltip = true)}
-	on:focus={() => (showTooltip = true)}
-	on:mouseleave={() => (showTooltip = false)}
->
-	{#if showTooltip && url}
-		<div class="bg-black p-2 rounded-md text-white" id="tooltip" use:popperUrlContent>
-			{url}
+<div class="inline-flex items-center gap-1 min-w-0 max-w-full">
+	{#if edit}
+		<div class="flex-1 min-w-0">
+			<Input on:input inputValue={url} label="url" inputType="url" />
 		</div>
+	{:else if url}
+		<a
+			href={normalizedHref}
+			target="_blank"
+			rel="noopener noreferrer"
+			on:click|stopPropagation
+			class="truncate text-xs text-muted-foreground hover:text-primary hover:underline font-mono"
+			title={url}
+		>
+			{url}
+		</a>
+		<CopyIcon
+			label="Copy URL"
+			class="h-8 w-8"
+			on:click={() => {
+				handleCopytoClipBoard({ message: 'URL copied to clipboard', content: url });
+			}}
+		/>
 	{/if}
-	<span class="flex items-center h-6">
-		<p class="truncate w-3/4" use:urlRef>
-			{#if edit}
-				<span class="mt-8">
-					<Input on:input inputValue={url} label="url" inputType="url" />
-				</span>
-			{:else}
-				<span class="text-xs">{url}</span>
-			{/if}
-		</p>
-		<span class={edit ? 'mt-8' : ''}>
-			<CopyIcon
-				disabled={!url}
-				on:keypress={() =>
-					handleCopytoClipBoard({ message: `url copied to clipboard`, content: url })}
-				on:click={() => {
-					handleCopytoClipBoard({ message: `url copied to clipboard`, content: url });
-				}}
-			/>
-		</span>
-	</span>
-</span>
+</div>

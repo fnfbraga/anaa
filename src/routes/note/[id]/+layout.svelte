@@ -1,3 +1,3 @@
-<span class="flex flex-col items-center mt-2">
+<div class="flex flex-col items-center">
 	<slot />
-</span>
+</div>

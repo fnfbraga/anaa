@@ -6,6 +6,9 @@
 	import { z } from 'zod';
 	import TagInput from '$lib/components/TagInput.svelte';
 	import Loading from '$lib/components/Loading.svelte';
+	import CopyIcon from '$lib/components/CopyIcon.svelte';
+	import { Badge } from '$lib/components/ui/badge';
+	import { handleCopytoClipBoard } from '$lib/functions/copy-to-clipboard';
 	import { type Item } from '$lib/schema';
 	import { page } from '$app/stores';
 	import type { PageData } from './$types';
@@ -45,16 +48,25 @@
 			return error;
 		}
 	};
+
+	$: modalTitle =
+		id === 'new' ? 'New Secure Note' : edit ? `Edit ${values.name || 'Note'}` : values.name || 'Secure Note';
 </script>
 
-<Modal closeRoute="/">
+<Modal closeRoute="/" title={modalTitle}>
+	<span slot="header">
+		<Badge variant="secondary" class="text-[11px]">Note</Badge>
+	</span>
+
 	{#if loadingState}
 		<Loading />
 	{/if}
+
 	<form
 		method="POST"
 		action={id === 'new' ? '?/add' : '?/edit'}
 		autocomplete="off"
+		class="space-y-5"
 		use:enhance={({ action }) => {
 			loadingState = true;
 			const actionName = action.search;
@@ -95,77 +107,105 @@
 		{#if id && id !== 'new'}
 			<input type="hidden" name="id" value={id} />
 		{/if}
-		<div class="p-4 ">
-			{#if id}
+
+		{#if id && id !== 'new'}
+			<div class="flex flex-wrap items-center justify-between gap-2 rounded-lg bg-muted/40 p-2.5 border border-border/60">
 				{#if !edit && !setDelete}
-					<Button
-						type="button"
-						on:click={() => (edit = true)}
-						color="hover:border-b-sky-500"
-						text="EDIT"
-					/>
-					<Button
-						type="button"
-						on:click={() => (setDelete = true)}
-						color="hover:border-b-red-500"
-						text="DELETE"
-					/>
+					<div class="flex items-center gap-1.5">
+						<span class="text-xs text-muted-foreground pl-1">Encrypted note</span>
+						{#if values.note}
+							<CopyIcon
+								label="Copy note content"
+								on:click={() => {
+									handleCopytoClipBoard({
+										message: 'note copied to clipboard',
+										content: values.note
+									});
+								}}
+							/>
+						{/if}
+					</div>
+					<div class="flex items-center gap-2">
+						<Button
+							type="button"
+							size="sm"
+							on:click={() => (edit = true)}
+							color="hover:border-b-sky-500"
+							text="EDIT"
+						/>
+						<Button
+							type="button"
+							size="sm"
+							on:click={() => (setDelete = true)}
+							color="hover:border-b-red-500"
+							text="DELETE"
+						/>
+					</div>
 				{:else if edit}
+					<span class="text-xs font-medium text-primary pl-1">Editing mode active</span>
 					<Button
 						type="button"
+						size="sm"
 						on:click={() => (edit = false)}
 						color="hover:border-b-stone-500"
 						text="CANCEL"
 					/>
 				{/if}
 				{#if setDelete}
-					<Button
-						type="button"
-						on:click={() => (setDelete = false)}
-						color="hover:border-b-stone-500"
-						text="CANCEL"
-					/>
-					<Button
-						type="submit"
-						formaction="?/delete"
-						color="hover:border-b-red-500"
-						text="CONFIRM DELETION"
-					/>
+					<span class="text-xs font-medium text-destructive pl-1">Delete this note permanently?</span>
+					<div class="flex items-center gap-2">
+						<Button
+							type="button"
+							size="sm"
+							on:click={() => (setDelete = false)}
+							color="hover:border-b-stone-500"
+							text="CANCEL"
+						/>
+						<Button
+							type="submit"
+							size="sm"
+							formaction="?/delete"
+							color="hover:border-b-red-500"
+							text="CONFIRM DELETION"
+						/>
+					</div>
 				{/if}
-			{/if}
-		</div>
-		<div id="input-container" class="pl-4 pr-4 space-y-4">
+			</div>
+		{/if}
+
+		<div id="input-container" class="space-y-4">
 			<Input
 				id="name"
 				disabled={!edit}
-				value={values.name}
 				bind:inputValue={values.name}
 				type="text"
 				name="name"
 				label="name"
 				aria-label="Name"
+				placeholder="Note title (e.g. Recovery Codes, WiFi)"
 				required
 			/>
 			<Input
 				id="note"
 				label="note"
-				value={values.note}
 				bind:inputValue={values.note}
-				classes=" bg-stone-100"
 				inputType="textarea"
 				name="note"
 				aria-label="Note"
+				placeholder="Write your encrypted note here..."
 				disabled={!edit}
+				required
 			/>
 			<TagInput disabled={!edit} bind:tags={values.tags} />
 			{#if edit}
-				<div class="flex justify-center pt-10">
+				<div class="flex justify-end pt-3">
 					<Button
 						id="submit-note"
 						type="submit"
-						disabled={errors().length > 0}
+						disabled={errors().length > 0 || loadingState}
 						color="hover:border-b-sky-500"
 						text="SAVE"
+						class="w-full sm:w-auto min-w-[140px]"
 					/>
 				</div>
 			{/if}

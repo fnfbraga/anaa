@@ -1,24 +1,69 @@
 <script lang="ts">
+	import { createEventDispatcher } from 'svelte';
+	import { cn } from '$lib/utils';
+
 	export let disabled = false;
+	export let label = 'Copy to clipboard';
+	let className = '';
+	export { className as class };
+
+	const dispatch = createEventDispatcher();
+	let copied = false;
+	let timeoutId: ReturnType<typeof setTimeout>;
+
+	function handleClick(event: MouseEvent) {
+		event.stopPropagation();
+		if (disabled) return;
+		copied = true;
+		clearTimeout(timeoutId);
+		timeoutId = setTimeout(() => {
+			copied = false;
+		}, 1800);
+		dispatch('click', event);
+	}
 </script>
 
-<span class="h-6 w-6">
-	<svg
-		on:click
-		on:keypress
-		xmlns="http://www.w3.org/2000/svg"
-		fill="none"
-		viewBox="0 0 24 24"
-		stroke-width="1.5"
-		stroke="currentColor"
-		class="w-6 h-6 ml-1 rounded-full  p-1 {disabled
-			? 'text-gray-300'
-			: 'cursor-pointer hover:bg-slate-200'}"
-	>
-		<path
+<button
+	type="button"
+	{disabled}
+	aria-label={copied ? 'Copied' : label}
+	title={copied ? 'Copied!' : label}
+	on:click={handleClick}
+	on:keypress
+	class={cn(
+		'inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-40',
+		copied && 'text-emerald-600 dark:text-emerald-400 bg-emerald-500/10',
+		className
+	)}
+>
+	{#if copied}
+		<svg
+			xmlns="http://www.w3.org/2000/svg"
+			viewBox="0 0 24 24"
+			fill="none"
+			stroke="currentColor"
+			stroke-width="2"
 			stroke-linecap="round"
 			stroke-linejoin="round"
-			d="M8.25 7.5V6.108c0-1.135.845-2.098 1.976-2.192.373-.03.748-.057 1.123-.08M15.75 18H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08M15.75 18.75v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5A3.375 3.375 0 006.375 7.5H5.25m11.9-3.664A2.251 2.251 0 0015 2.25h-1.5a2.251 2.251 0 00-2.15 1.586m5.8 0c.065.21.1.433.1.664v.75h-6V4.5c0-.231.035-.454.1-.664M6.75 7.5H4.875c-.621 0-1.125.504-1.125 1.125v12c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V16.5a9 9 0 00-9-9z"
-		/>
-	</svg>
-</span>
+			class="h-4 w-4"
+			aria-hidden="true"
+		>
+			<polyline points="20 6 9 17 4 12" />
+		</svg>
+	{:else}
+		<svg
+			xmlns="http://www.w3.org/2000/svg"
+			viewBox="0 0 24 24"
+			fill="none"
+			stroke="currentColor"
+			stroke-width="2"
+			stroke-linecap="round"
+			stroke-linejoin="round"
+			class="h-4 w-4"
+			aria-hidden="true"
+		>
+			<rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+			<path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+		</svg>
+	{/if}
+</button>

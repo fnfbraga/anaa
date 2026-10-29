@@ -7,6 +7,7 @@
 	import TagInput from '$lib/components/TagInput.svelte';
 	import Password from '$lib/components/Password.svelte';
 	import Loading from '$lib/components/Loading.svelte';
+	import { Badge } from '$lib/components/ui/badge';
 	import { type Item } from '$lib/schema';
 	import { page } from '$app/stores';
 	import type { PageData } from './$types';
@@ -52,16 +53,25 @@
 			return error;
 		}
 	};
+
+	$: modalTitle =
+		id === 'new' ? 'New Login' : edit ? `Edit ${values.name || 'Login'}` : values.name || 'Login Details';
 </script>
 
-<Modal closeRoute="/">
+<Modal closeRoute="/" title={modalTitle}>
+	<span slot="header">
+		<Badge variant="secondary" class="text-[11px]">Login</Badge>
+	</span>
+
 	{#if loadingState}
 		<Loading />
 	{/if}
+
 	<form
 		method="POST"
 		action={id === 'new' ? '?/add' : '?/edit'}
 		autocomplete="off"
+		class="space-y-5"
 		use:enhance={({ action }) => {
 			loadingState = true;
 			const actionName = action.search;
@@ -102,101 +112,139 @@
 		{#if id && id !== 'new'}
 			<input type="hidden" name="id" value={id} />
 		{/if}
-		<div class="p-4 ">
-			{#if id}
+
+		{#if id && id !== 'new'}
+			<div class="flex flex-wrap items-center justify-between gap-2 rounded-lg bg-muted/40 p-2.5 border border-border/60">
 				{#if !edit && !setDelete}
-					<Button
-						type="button"
-						on:click={() => (edit = true)}
-						color="hover:border-b-sky-500"
-						text="EDIT"
-					/>
-					<Button
-						type="button"
-						on:click={() => (setDelete = true)}
-						color="hover:border-b-red-500"
-						text="DELETE"
-					/>
+					<span class="text-xs text-muted-foreground pl-1">Viewing encrypted credential</span>
+					<div class="flex items-center gap-2">
+						<Button
+							type="button"
+							size="sm"
+							on:click={() => (edit = true)}
+							color="hover:border-b-sky-500"
+							text="EDIT"
+						/>
+						<Button
+							type="button"
+							size="sm"
+							on:click={() => (setDelete = true)}
+							color="hover:border-b-red-500"
+							text="DELETE"
+						/>
+					</div>
 				{:else if edit}
+					<span class="text-xs font-medium text-primary pl-1">Editing mode active</span>
 					<Button
 						type="button"
+						size="sm"
 						on:click={() => (edit = false)}
 						color="hover:border-b-stone-500"
 						text="CANCEL"
 					/>
 				{/if}
 				{#if setDelete}
-					<Button
-						type="button"
-						on:click={() => (setDelete = false)}
-						color="hover:border-b-stone-500"
-						text="CANCEL"
-					/>
-					<Button
-						type="submit"
-						formaction="?/delete"
-						color="hover:border-b-red-500"
-						text="CONFIRM DELETION"
-					/>
+					<span class="text-xs font-medium text-destructive pl-1">Delete this login permanently?</span>
+					<div class="flex items-center gap-2">
+						<Button
+							type="button"
+							size="sm"
+							on:click={() => (setDelete = false)}
+							color="hover:border-b-stone-500"
+							text="CANCEL"
+						/>
+						<Button
+							type="submit"
+							size="sm"
+							formaction="?/delete"
+							color="hover:border-b-red-500"
+							text="CONFIRM DELETION"
+						/>
+					</div>
 				{/if}
-			{/if}
-		</div>
-		<div id="input-container" class="pl-4 pr-4 space-y-4">
+			</div>
+		{/if}
+
+		<div id="input-container" class="space-y-4">
 			<Input
 				id="name"
 				disabled={!edit}
-				value={values.name}
 				bind:inputValue={values.name}
 				type="text"
 				name="name"
 				label="name"
 				aria-label="Name"
+				placeholder="e.g. GitHub, Personal Email"
 				required
 			/>
-			<Input
-				id="url"
-				disabled={!edit}
-				value={values.url}
-				bind:inputValue={values.url}
-				name="url"
-				label="url"
-				aria-label="Url"
-				inputType="url"
-			/>
-			<div class="flex justify-between w-5/6">
-				<Input
-					id="username"
-					disabled={!edit}
-					value={values.username}
-					bind:inputValue={values.username}
-					name="username"
-					label="username"
-					aria-label="Username"
-					containerClasses={!edit ? 'pb-2' : ''}
-				/>
 
-				<span class="mr-20">
+			<div class="flex items-end gap-1.5">
+				<div class="flex-1 min-w-0">
+					<Input
+						id="url"
+						disabled={!edit}
+						bind:inputValue={values.url}
+						name="url"
+						label="url"
+						aria-label="Url"
+						placeholder="https://example.com"
+						inputType="url"
+					/>
+				</div>
+				{#if values.url}
+					<div class="pb-0.5 shrink-0 flex items-center">
+						<CopyIcon
+							label="Copy URL"
+							on:click={() => {
+								handleCopytoClipBoard({
+									message: 'url copied to clipboard',
+									content: values.url
+								});
+							}}
+						/>
+					</div>
+				{/if}
+			</div>
+
+			<div class="flex items-end gap-1.5">
+				<div class="flex-1 min-w-0">
+					<Input
+						id="username"
+						disabled={!edit}
+						bind:inputValue={values.username}
+						name="username"
+						label="username"
+						aria-label="Username"
+						placeholder="username or email@example.com"
+					/>
+				</div>
+				<div class="pb-0.5 shrink-0">
 					<CopyIcon
-						on:keypress={() => alert('copy')}
+						disabled={!values.username}
+						label="Copy username"
 						on:click={() => {
 							handleCopytoClipBoard({
-								message: `username copied to clipboard`,
+								message: 'username copied to clipboard',
 								content: values.username
 							});
 						}}
 					/>
-				</span>
+				</div>
 			</div>
+
 			<Password {edit} disabled={!edit} bind:password={values.password} isModal={true} />
+
 			<TagInput disabled={!edit} bind:tags={values.tags} />
+
 			{#if edit}
-				<div class="flex justify-center pt-10">
+				<div class="flex justify-end pt-3">
 					<Button
 						id="submit-login"
 						type="submit"
-						disabled={errors().length > 0}
+						disabled={errors().length > 0 || loadingState}
 						color="hover:border-b-sky-500"
 						text="SAVE"
+						class="w-full sm:w-auto min-w-[140px]"
 					/>
 				</div>
 			{/if}
