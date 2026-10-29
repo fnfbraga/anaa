@@ -3,10 +3,12 @@
 	export let tags: Array<string | null> | undefined | null;
 </script>
 
-{#if tags}
-	<span class="flex flex-wrap space-x-1">
+{#if tags && tags.filter(Boolean).length > 0}
+	<div class="flex flex-wrap items-center gap-1.5" aria-label="Tags">
 		{#each tags as tag}
-			<Tag {tag} />
+			{#if tag}
+				<Tag {tag} />
+			{/if}
 		{/each}
-	</span>
+	</div>
 {/if}

@@ -1,19 +1,32 @@
 <script lang="ts">
-	export let color: string = 'white';
+	import { Button as UiButton, type Variant, type Size } from '$lib/components/ui/button';
+
+	export let color: string = '';
 	export let text: string = '';
 	export let disabled = false;
 	export let type: 'button' | 'submit' | 'reset' = 'button';
+	export let variant: Variant | undefined = undefined;
+	export let size: Size = 'default';
+
+	$: resolvedVariant =
+		variant ??
+		(color.includes('red')
+			? 'destructive'
+			: color.includes('sky') || color.includes('blue')
+			? 'default'
+			: 'outline');
 </script>
 
-<button
+<UiButton
 	{type}
-	{...$$restProps}
 	{disabled}
+	variant={resolvedVariant}
+	{size}
 	on:click
-	class={!disabled ? `hover:border-b-2 ${color} -pb-4 hover:-mb-0.5 pb-2` : ''}
+	{...$$restProps}
 >
-	<span class={!disabled ? `hover:bg-stone-100 rounded-t-lg p-2.5` : 'text-gray-500'}>
+	{#if text}
 		{text}
-		<slot />
-	</span>
-</button>
+	{/if}
+	<slot />
+</UiButton>

@@ -1,56 +1,128 @@
 <script lang="ts">
 	import { AlertEnum } from '$lib/models/misc';
 	import { alerts } from '$lib/store';
+	import { Alert } from '$lib/components/ui/alert';
 	import { onMount } from 'svelte';
+	import { fly, fade } from 'svelte/transition';
 
-	const getColor = (type: AlertEnum) => {
+	const getVariant = (type: AlertEnum): 'default' | 'destructive' | 'warning' | 'success' => {
 		switch (type) {
 			case AlertEnum.error:
-				return 'bg-red-100 border border-red-400 text-red-700';
+				return 'destructive';
 			case AlertEnum.warning:
-				return 'bg-orange-100 border border-orange-400 text-orange-700';
+				return 'warning';
 			default:
-				return 'bg-green-100 border border-green-400 text-green-700';
+				return 'success';
 		}
 	};
 
 	const handleRemoveAlert = (alertIndex: number) => {
-		alerts.update((alerts) => alerts.filter((_, i) => alertIndex !== i));
+		alerts.update((current) => current.filter((_, i) => alertIndex !== i));
 	};
 
-	let time = new Date();
+	let now = Date.now();
 
 	onMount(() => {
 		const interval = setInterval(() => {
-			time = new Date();
-		}, 1000);
+			now = Date.now();
+			alerts.update((current) =>
+				current.filter((item) => item && item.createdOn + 3500 > now)
+			);
+		}, 500);
 
 		return () => {
 			clearInterval(interval);
 		};
 	});
+
+	$: activeAlerts = $alerts.filter((item) => item && item.createdOn + 3500 > now);
 </script>
 
-{#each $alerts as alert, index}
-	{#if alert && alert.createdOn + 3000 > time.getTime()}
+<div
+	aria-live="polite"
+	aria-atomic="true"
+	class="pointer-events-none fixed top-4 right-4 left-4 sm:left-auto sm:top-auto sm:bottom-6 sm:right-6 z-[100] flex flex-col gap-2 sm:w-full sm:max-w-sm"
+>
+	{#each activeAlerts as alert, index (alert.createdOn + '-' + index)}
 		<div
-			class="{getColor(alert.type)} bottom-10 fixed z-90 left-16 px-4 py-3 rounded mb-1"
-			role="alert"
+			in:fly={{ y: -12, duration: 180 }}
+			out:fade={{ duration: 150 }}
+			class="pointer-events-auto shadow-lg rounded-lg bg-card"
 		>
-			<strong class="font-bold mr-9">{alert?.message}</strong>
-			<span class="absolute top-0 bottom-0 right-0 px-4 py-3">
-				<svg
-					class="fill-current h-6 w-6 {getColor(alert.type)}"
+			<Alert variant={getVariant(alert.type)} class="flex items-center justify-between py-3 px-4 pr-3 shadow-md">
+				<div class="flex items-center gap-2.5 min-w-0">
+					{#if alert.type === AlertEnum.error}
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							class="h-4 w-4 shrink-0"
+							aria-hidden="true"
+						>
+							<circle cx="12" cy="12" r="10" />
+							<line x1="12" y1="8" x2="12" y2="12" />
+							<line x1="12" y1="16" x2="12.01" y2="16" />
+						</svg>
+					{:else if alert.type === AlertEnum.warning}
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							class="h-4 w-4 shrink-0"
+							aria-hidden="true"
+						>
+							<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+							<path d="M12 9v4" />
+							<path d="M12 17h.01" />
+						</svg>
+					{:else}
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							class="h-4 w-4 shrink-0"
+							aria-hidden="true"
+						>
+							<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+							<polyline points="22 4 12 14.01 9 11.01" />
+						</svg>
+					{/if}
+					<span class="text-sm font-medium leading-snug truncate">{alert.message}</span>
+				</div>
+				<button
+					type="button"
+					aria-label="Dismiss notification"
 					on:click={() => handleRemoveAlert(index)}
-					on:keypress={() => handleRemoveAlert(index)}
-					role="button"
-					xmlns="http://www.w3.org/2000/svg"
-					viewBox="0 0 20 20"
-					><title>Close</title><path
-						d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z"
-					/></svg
+					class="ml-3 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md opacity-70 transition-opacity hover:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
 				>
-			</span>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						class="h-4 w-4"
+						aria-hidden="true"
+					>
+						<path d="M18 6 6 18" />
+						<path d="m6 6 12 12" />
+					</svg>
+				</button>
+			</Alert>
 		</div>
-	{/if}
-{/each}
+	{/each}
+</div>

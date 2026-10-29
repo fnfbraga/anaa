@@ -24,7 +24,7 @@ const config = {
 			split: false
 		}),
 		alias: {
-			'@/*': './path/to/lib/*'
+			'@/*': './src/lib/*'
 		}
 	}
 };

@@ -1,87 +1,63 @@
 <script lang="ts">
-	export let inputValue: string | number | undefined | null = undefined;
+	import { Input as UiInput } from '$lib/components/ui/input';
+	import { Textarea as UiTextarea } from '$lib/components/ui/textarea';
+	import { Label } from '$lib/components/ui/label';
+	import { cn } from '$lib/utils';
+
+	export let inputValue: string | number | undefined | null = '';
 	export let inputType: 'input' | 'textarea' | 'url' | 'password' = 'input';
+	export let type: string | undefined = undefined;
 	export let containerClasses = '';
+	export let label: string = '';
+	export let id: string | undefined = undefined;
+	export let name: string | undefined = undefined;
+	export let disabled = false;
+	export let required = false;
+	export let isModal = true;
+	export let classes = '';
+
+	$: inputId = id || name || `field-${label || 'input'}`;
+	$: formattedLabel = label ? label.charAt(0).toUpperCase() + label.slice(1) : '';
+	$: resolvedType =
+		inputType === 'url'
+			? 'url'
+			: inputType === 'password'
+			? 'password'
+			: type || 'text';
 </script>
 
-{#if inputType === 'url'}
-	<div class="relative {containerClasses} ">
-		<input
-			type="url"
-			class=" {$$props.disabled
-				? 'bg-white'
-				: 'bg-gray-50 border-gray-300 border-b-2'} block rounded-t-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900  dark:bg-gray-700 border-0 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-			placeholder=" "
-			on:input
-			{...$$props}
+<div class={cn('w-full space-y-1.5', containerClasses)}>
+	{#if formattedLabel}
+		<Label forId={inputId} class="inline-flex items-center gap-1">
+			<span>{formattedLabel}</span>
+			{#if required && !disabled}
+				<span class="text-destructive" aria-hidden="true">*</span>
+			{/if}
+		</Label>
+	{/if}
+
+	{#if inputType === 'textarea'}
+		<UiTextarea
 			{...$$restProps}
+			id={inputId}
+			{name}
+			{disabled}
+			{required}
 			bind:value={inputValue}
-		/>
-		<label
-			for="floating_filled"
-			class="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] left-2.5 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4"
-			>{$$props.label || ``}</label
-		>
-	</div>
-{/if}
-{#if inputType === 'input'}
-	<div class="relative {containerClasses} ">
-		<input
-			type="text"
-			class=" {$$props.disabled
-				? 'bg-white'
-				: 'bg-gray-50 border-gray-300 border-b-2'} block rounded-t-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900  dark:bg-gray-700 border-0 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-			placeholder=" "
 			on:input
-			{...$$props}
-			{...$$restProps}
-			bind:value={inputValue}
+			class={cn('min-h-[180px] resize-y leading-relaxed font-mono text-sm', classes)}
 		/>
-		<label
-			for="floating_filled"
-			class="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] left-2.5 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4"
-			>{$$props.label || ``}</label
-		>
-	</div>
-{/if}
-{#if inputType === 'password'}
-	<div class="relative  {containerClasses}">
-		<input
-			type="password"
-			class=" {$$props.disabled
-				? 'bg-white'
-				: 'bg-gray-50 border-gray-300 border-b-2'} block rounded-t-lg {$$props.isModal
-				? 'px-2.5 pb-2.5 pt-5 w-full'
-				: ''} text-sm text-gray-900  dark:bg-gray-700 border-0 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-			placeholder=" "
+	{:else}
+		<UiInput
+			{...$$restProps}
+			id={inputId}
+			{name}
+			type={resolvedType}
+			{disabled}
+			{required}
+			bind:value={inputValue}
 			on:input
-			{...$$props}
-			{...$$restProps}
-			bind:value={inputValue}
+			class={cn(!isModal && 'h-9 text-xs', inputType === 'password' && 'font-mono', classes)}
 		/>
-		<label
-			for="floating_filled"
-			class="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] left-2.5 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4"
-			>{$$props.label || ''}</label
-		>
-	</div>
-{/if}
-{#if inputType === 'textarea'}
-	<div class="relative {containerClasses} ">
-		<textarea
-			class=" {$$props.disabled
-				? 'bg-white'
-				: 'bg-gray-50 border-gray-300 border-b-2'} block h-96 rounded-t-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900  dark:bg-gray-700 border-0 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-			placeholder=" "
-			on:input
-			{...$$props}
-			{...$$restProps}
-			bind:value={inputValue}
-		/>
-		<label
-			for="floating_filled"
-			class="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] left-2.5 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4"
-			>{$$props.label || ``}</label
-		>
-	</div>
-{/if}
+	{/if}
+</div>

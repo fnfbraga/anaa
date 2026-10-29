@@ -1,3 +1,98 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+	:root {
+		--background: 210 40% 98%;
+		--foreground: 222.2 84% 4.9%;
+
+		--muted: 210 40% 94%;
+		--muted-foreground: 215.4 16.3% 40%;
+
+		--popover: 0 0% 100%;
+		--popover-foreground: 222.2 84% 4.9%;
+
+		--card: 0 0% 100%;
+		--card-foreground: 222.2 84% 4.9%;
+
+		--border: 214.3 31.8% 88%;
+		--input: 214.3 31.8% 88%;
+
+		--primary: 221.2 83.2% 53.3%;
+		--primary-foreground: 210 40% 98%;
+
+		--secondary: 210 40% 94%;
+		--secondary-foreground: 222.2 47.4% 11.2%;
+
+		--accent: 210 40% 94%;
+		--accent-foreground: 222.2 47.4% 11.2%;
+
+		--destructive: 0 72.2% 50.6%;
+		--destructive-foreground: 210 40% 98%;
+
+		--ring: 221.2 83.2% 53.3%;
+
+		--radius: 0.75rem;
+	}
+
+	.dark {
+		--background: 222.2 84% 4.9%;
+		--foreground: 210 40% 98%;
+
+		--muted: 217.2 32.6% 15%;
+		--muted-foreground: 215 20.2% 68%;
+
+		--popover: 222.2 84% 6.5%;
+		--popover-foreground: 210 40% 98%;
+
+		--card: 222.2 47.4% 8.5%;
+		--card-foreground: 210 40% 98%;
+
+		--border: 217.2 32.6% 18.5%;
+		--input: 217.2 32.6% 18.5%;
+
+		--primary: 217.2 91.2% 59.8%;
+		--primary-foreground: 222.2 47.4% 11.2%;
+
+		--secondary: 217.2 32.6% 16.5%;
+		--secondary-foreground: 210 40% 98%;
+
+		--accent: 217.2 32.6% 16.5%;
+		--accent-foreground: 210 40% 98%;
+
+		--destructive: 0 62.8% 55.6%;
+		--destructive-foreground: 210 40% 98%;
+
+		--ring: 224.3 76.3% 48%;
+	}
+}
+
+@layer base {
+	* {
+		@apply border-border;
+		-webkit-tap-highlight-color: transparent;
+	}
+
+	html {
+		@apply antialiased scroll-smooth;
+		text-size-adjust: 100%;
+	}
+
+	body {
+		@apply bg-background text-foreground min-h-screen selection:bg-primary/20 selection:text-primary;
+		padding-top: env(safe-area-inset-top, 0px);
+		padding-bottom: env(safe-area-inset-bottom, 0px);
+		padding-left: env(safe-area-inset-left, 0px);
+		padding-right: env(safe-area-inset-right, 0px);
+	}
+}
+
+/* Prevent iOS zoom on inputs by ensuring 16px font-size on mobile */
+@media screen and (max-width: 640px) {
+	input,
+	textarea,
+	select {
+		font-size: 16px !important;
+	}
+}
